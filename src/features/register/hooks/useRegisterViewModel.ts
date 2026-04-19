@@ -6,11 +6,11 @@
  */
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { firestoreManager } from '../../../shared/lib/firebase'
+import { isAppError, resolveRegisterErrorMessage } from '../../../shared/errors'
 import type { RegisterMessages } from '../../../shared/locale/types'
 import { FIRESTORE_COLLECTIONS } from '../../../shared/types/firestore'
 import type { Department } from '../../../shared/types/firestore/department.model'
 import { registerRepository } from '../data/register.repository.instance'
-import { RegistrationError, type RegistrationErrorCode } from '../data/registration.errors'
 import type { DepartmentOption, RegistrationRole } from '../model/types'
 import { isValidDpuStudentEmail, isValidDpuTeacherEmail } from '../utils/dpuEmailPolicy'
 import { normalizeSearch } from '../utils/search'
@@ -105,23 +105,38 @@ export function useRegisterViewModel(messages: RegisterMessages) {
     const pass = password
 
     if (!name || !mail || !pass) {
-      setStatus({ kind: 'error', message: messages.errorRequired })
+      setStatus({
+        kind: 'error',
+        message: resolveRegisterErrorMessage('REGISTER_REQUIRED_FIELDS', messages),
+      })
       return
     }
     if (!selectedDepartment) {
-      setStatus({ kind: 'error', message: messages.errorDepartmentRequired })
+      setStatus({
+        kind: 'error',
+        message: resolveRegisterErrorMessage('REGISTER_DEPARTMENT_REQUIRED', messages),
+      })
       return
     }
     if (role === 'student' && !isValidDpuStudentEmail(mail)) {
-      setStatus({ kind: 'error', message: messages.errorEmailStudentDomain })
+      setStatus({
+        kind: 'error',
+        message: resolveRegisterErrorMessage('REGISTER_EMAIL_STUDENT_DOMAIN', messages),
+      })
       return
     }
     if (role === 'teacher' && !isValidDpuTeacherEmail(mail)) {
-      setStatus({ kind: 'error', message: messages.errorEmailTeacherDomain })
+      setStatus({
+        kind: 'error',
+        message: resolveRegisterErrorMessage('REGISTER_EMAIL_TEACHER_DOMAIN', messages),
+      })
       return
     }
     if (pass.length < 6) {
-      setStatus({ kind: 'error', message: messages.errorPasswordLength })
+      setStatus({
+        kind: 'error',
+        message: resolveRegisterErrorMessage('REGISTER_PASSWORD_LENGTH', messages),
+      })
       return
     }
 
@@ -140,17 +155,17 @@ export function useRegisterViewModel(messages: RegisterMessages) {
       })
       setStatus({ kind: 'success', message: messages.successSignup })
     } catch (err) {
-      if (err instanceof RegistrationError) {
-        const map: Record<RegistrationErrorCode, string> = {
-          ROLE_NOT_FOUND: messages.errorRoleNotFound,
-          DEPARTMENT_NOT_FOUND: messages.errorDepartmentNotFound,
-          AUTH_FAILED: messages.errorSignup,
-          PROFILE_WRITE_FAILED: messages.errorProfileWrite,
-        }
-        setStatus({ kind: 'error', message: map[err.code] })
+      if (isAppError(err)) {
+        setStatus({
+          kind: 'error',
+          message: resolveRegisterErrorMessage(err.code, messages),
+        })
         return
       }
-      setStatus({ kind: 'error', message: messages.errorSignup })
+      setStatus({
+        kind: 'error',
+        message: resolveRegisterErrorMessage('REGISTER_SIGNUP_FAILED', messages),
+      })
     }
   }, [
     displayName,

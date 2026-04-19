@@ -10,8 +10,8 @@ import type { IFirestoreManager } from '../../../shared/lib/firebase/firestore-m
 import { FIRESTORE_COLLECTIONS } from '../../../shared/types/firestore'
 import type { Department } from '../../../shared/types/firestore/department.model'
 import type { UserRole } from '../../../shared/types/firestore/user-role.model'
+import { AppError } from '../../../shared/errors'
 import type { RegistrationRole } from '../model/types'
-import { RegistrationError } from './registration.errors'
 
 export type CompleteRegistrationInput = {
   displayName: string
@@ -72,12 +72,12 @@ export class RegisterRepository {
 
     const resolvedRole = findRole(roles, input.role, input.roleLabels)
     if (!resolvedRole) {
-      throw new RegistrationError('ROLE_NOT_FOUND')
+      throw new AppError('REGISTER_ROLE_NOT_FOUND')
     }
 
     const deptRow = departments.find((row) => row.id === input.department.id)
     if (!deptRow) {
-      throw new RegistrationError('DEPARTMENT_NOT_FOUND')
+      throw new AppError('REGISTER_DEPARTMENT_NOT_FOUND')
     }
     const resolvedDept = { id: deptRow.id, name: deptRow.data.name }
 
@@ -87,7 +87,7 @@ export class RegisterRepository {
       uid = credential.user.uid
       await updateProfile(credential.user, { displayName: input.displayName.trim() })
     } catch {
-      throw new RegistrationError('AUTH_FAILED')
+      throw new AppError('REGISTER_AUTH_FAILED')
     }
 
     const userDoc: DocumentData = {
@@ -104,7 +104,7 @@ export class RegisterRepository {
     try {
       await this.db.set(FIRESTORE_COLLECTIONS.users, uid, userDoc)
     } catch {
-      throw new RegistrationError('PROFILE_WRITE_FAILED')
+      throw new AppError('REGISTER_PROFILE_WRITE_FAILED')
     }
   }
 }
