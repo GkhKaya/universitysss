@@ -29,3 +29,12 @@
   line-height: var(--leading-relaxed);
   color: var(--color-text-muted);
 }
+
+.home__cta {
+  margin-top: var(--space-6) !important;
+}
+
+.home__cta a {
+  font-weight: 600;
+  font-size: var(--text-md);
+}
