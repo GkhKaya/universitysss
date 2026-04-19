@@ -1,15 +1,15 @@
 import type { FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import type { RegisterMessages } from '../../../shared/locale/types'
+import type { RegisterMessages } from '../../../../shared/locale/types'
 import type { RegistrationRole } from '../model/types'
 import type { RegisterFormStatus } from '../hooks/useRegisterViewModel'
 import type { DepartmentOption } from '../model/types'
 import { DepartmentField } from './DepartmentField'
-import { FormField } from './FormField'
-import { IconVisibility, IconVisibilityOff } from './RegisterIcons'
-import { LocaleSwitcher } from './LocaleSwitcher'
+import { FormField } from '../../ui/FormField'
+import { IconVisibility, IconVisibilityOff } from '../../ui/AuthIcons'
+import { LocaleSwitcher } from '../../ui/LocaleSwitcher'
 import { RoleSelector } from './RoleSelector'
-import './RegisterForm.css'
+import '../../ui/auth-form.css'
 
 export type RegisterFormViewProps = {
   strings: RegisterMessages
@@ -38,17 +38,17 @@ export function RegisterForm(props: RegisterFormViewProps) {
   const { strings, status, onSubmit } = props
 
   return (
-    <section className="register-form-section">
-      <div className="register-form-section__inner">
-        <header className="register-form-section__header">
-          <div className="register-form-section__header-row">
+    <section className="auth-form-section">
+      <div className="auth-form-section__inner">
+        <header className="auth-form-section__header">
+          <div className="auth-form-section__header-row">
             <LocaleSwitcher label={strings.localeSwitchLabel} />
           </div>
-          <h1 className="register-form-section__title">{strings.formTitle}</h1>
-          <p className="register-form-section__lead">{strings.formSubtitle}</p>
+          <h1 className="auth-form-section__title">{strings.formTitle}</h1>
+          <p className="auth-form-section__lead">{strings.formSubtitle}</p>
         </header>
 
-        <form className="register-form" onSubmit={onSubmit} noValidate>
+        <form className="auth-form" onSubmit={onSubmit} noValidate>
           <RoleSelector
             value={props.role}
             onChange={props.setRole}
@@ -59,7 +59,7 @@ export function RegisterForm(props: RegisterFormViewProps) {
             }}
           />
 
-          <div className="register-form__fields">
+          <div className="auth-form__fields">
             <FormField
               id="register-full-name"
               label={strings.fullNameLabel}
@@ -95,7 +95,7 @@ export function RegisterForm(props: RegisterFormViewProps) {
               selected={props.selectedDepartment}
               onSelect={props.onSelectDepartment}
             />
-            <div className="register-form__password">
+            <div className="auth-form__password">
               <FormField
                 id="register-password"
                 label={strings.passwordLabel}
@@ -125,30 +125,30 @@ export function RegisterForm(props: RegisterFormViewProps) {
           </div>
 
           {status.kind === 'error' ? (
-            <p className="register-form__feedback register-form__feedback--error" role="alert">
+            <p className="auth-form__feedback auth-form__feedback--error" role="alert">
               {status.message}
             </p>
           ) : null}
           {status.kind === 'success' ? (
-            <p className="register-form__feedback register-form__feedback--ok" role="status">
+            <p className="auth-form__feedback auth-form__feedback--ok" role="status">
               {status.message}
             </p>
           ) : null}
 
-          <p className="register-form__terms">
+          <p className="auth-form__terms">
             {strings.termsPrefix}
-            <a className="register-form__link" href="#">
+            <a className="auth-form__link" href="#">
               {strings.termsLink}
             </a>
             {strings.termsMiddle}
-            <a className="register-form__link" href="#">
+            <a className="auth-form__link" href="#">
               {strings.privacyLink}
             </a>
             {strings.termsSuffix}
           </p>
 
           <button
-            className="register-form__submit"
+            className="auth-form__submit"
             type="submit"
             disabled={
               status.kind === 'submitting' ||
@@ -159,9 +159,9 @@ export function RegisterForm(props: RegisterFormViewProps) {
             {status.kind === 'submitting' ? strings.submitLoading : strings.submitButton}
           </button>
 
-          <p className="register-form__footer">
+          <p className="auth-form__footer">
             {strings.footerPrompt}{' '}
-            <Link className="register-form__link register-form__link--strong" to="/">
+            <Link className="auth-form__link auth-form__link--strong" to="/login">
               {strings.loginLink}
             </Link>
           </p>

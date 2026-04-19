@@ -1,4 +1,4 @@
-.register-form-section {
+.auth-form-section {
   width: 100%;
   flex: 1;
   display: flex;
@@ -10,36 +10,36 @@
 }
 
 @media (min-width: 64rem) {
-  .register-form-section {
+  .auth-form-section {
     width: 50%;
     padding: var(--space-16);
     padding-top: var(--space-16);
   }
 }
 
-.register-form-section__inner {
+.auth-form-section__inner {
   width: 100%;
   max-width: var(--content-form-max);
 }
 
-.register-form-section__header {
+.auth-form-section__header {
   margin-bottom: var(--space-10);
   text-align: center;
 }
 
 @media (min-width: 64rem) {
-  .register-form-section__header {
+  .auth-form-section__header {
     text-align: start;
   }
 }
 
-.register-form-section__header-row {
+.auth-form-section__header-row {
   display: flex;
   justify-content: flex-end;
   margin-bottom: var(--space-4);
 }
 
-.register-form-section__title {
+.auth-form-section__title {
   margin: 0 0 var(--space-2);
   font-size: var(--text-3xl);
   font-weight: 700;
@@ -47,43 +47,43 @@
   color: var(--register-on-surface);
 }
 
-.register-form-section__lead {
+.auth-form-section__lead {
   margin: 0;
   font-size: var(--text-sm);
   color: var(--register-on-surface-variant);
 }
 
-.register-form {
+.auth-form {
   display: flex;
   flex-direction: column;
   gap: var(--space-6);
 }
 
-.register-form__fields {
+.auth-form__fields {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
 }
 
-.register-form__password .form-field__end {
+.auth-form__password .form-field__end {
   right: var(--space-2);
 }
 
-.register-form__feedback {
+.auth-form__feedback {
   margin: 0;
   font-size: var(--text-sm);
   text-align: center;
 }
 
-.register-form__feedback--error {
+.auth-form__feedback--error {
   color: var(--color-error);
 }
 
-.register-form__feedback--ok {
+.auth-form__feedback--ok {
   color: var(--register-primary-container);
 }
 
-.register-form__terms {
+.auth-form__terms {
   margin: 0;
   font-size: var(--text-legal);
   line-height: var(--leading-relaxed);
@@ -92,21 +92,21 @@
   padding-inline: var(--space-4);
 }
 
-.register-form__link {
+.auth-form__link {
   color: var(--register-primary);
   text-decoration: none;
 }
 
-.register-form__link:hover {
+.auth-form__link:hover {
   text-decoration: underline;
 }
 
-.register-form__link--strong {
+.auth-form__link--strong {
   font-weight: 600;
   margin-inline-start: var(--space-1);
 }
 
-.register-form__submit {
+.auth-form__submit {
   width: 100%;
   padding: var(--space-4);
   border: none;
@@ -123,20 +123,20 @@
     transform 0.1s ease;
 }
 
-.register-form__submit:hover:not(:disabled) {
+.auth-form__submit:hover:not(:disabled) {
   opacity: 0.92;
 }
 
-.register-form__submit:active:not(:disabled) {
+.auth-form__submit:active:not(:disabled) {
   transform: scale(0.98);
 }
 
-.register-form__submit:disabled {
+.auth-form__submit:disabled {
   opacity: 0.65;
   cursor: not-allowed;
 }
 
-.register-form__footer {
+.auth-form__footer {
   margin: 0;
   padding-top: var(--space-6);
   text-align: center;

@@ -25,3 +25,7 @@ export function resolveRegisterErrorMessage(
   const key = REGISTER_MESSAGE_KEY[code]
   return messages[key]
 }
+
+export function isRegisterAppErrorCode(code: string): code is RegisterAppErrorCode {
+  return Object.prototype.hasOwnProperty.call(REGISTER_MESSAGE_KEY, code)
+}
