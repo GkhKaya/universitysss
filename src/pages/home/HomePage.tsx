@@ -11,6 +11,8 @@ export function HomePage() {
       <h1>{h.title}</h1>
       <p>{h.description}</p>
       <p className="home__cta">
+        <Link to="/login">{h.loginCta}</Link>
+        {' · '}
         <Link to="/register">{h.registerCta}</Link>
       </p>
     </main>

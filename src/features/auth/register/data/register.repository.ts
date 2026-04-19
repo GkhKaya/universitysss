@@ -5,12 +5,12 @@
 import { updateProfile } from 'firebase/auth'
 import { serverTimestamp } from 'firebase/firestore'
 import type { DocumentData } from 'firebase/firestore'
-import type { IAuthManager } from '../../../shared/lib/firebase/auth-manager'
-import type { IFirestoreManager } from '../../../shared/lib/firebase/firestore-manager'
-import { FIRESTORE_COLLECTIONS } from '../../../shared/types/firestore'
-import type { Department } from '../../../shared/types/firestore/department.model'
-import type { UserRole } from '../../../shared/types/firestore/user-role.model'
-import { AppError } from '../../../shared/errors'
+import type { IAuthManager } from '../../../../shared/lib/firebase/auth-manager'
+import type { IFirestoreManager } from '../../../../shared/lib/firebase/firestore-manager'
+import { FIRESTORE_COLLECTIONS } from '../../../../shared/types/firestore'
+import type { Department } from '../../../../shared/types/firestore/department.model'
+import type { UserRole } from '../../../../shared/types/firestore/user-role.model'
+import { AppError } from '../../../../shared/errors'
 import type { RegistrationRole } from '../model/types'
 
 export type CompleteRegistrationInput = {
