@@ -1,0 +1,12 @@
+.register-page {
+  min-height: 100dvh;
+  overflow: hidden;
+  background: var(--register-surface);
+  color: var(--register-on-surface);
+}
+
+.register-page__main {
+  display: flex;
+  min-height: 100dvh;
+  width: 100%;
+}
