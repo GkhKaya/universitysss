@@ -5,11 +5,15 @@
  * veya (b) daha ağır akışlarda `useReducer` + action enum.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { firestoreManager } from '../../../shared/lib/firebase'
-import { isAppError, resolveRegisterErrorMessage } from '../../../shared/errors'
-import type { RegisterMessages } from '../../../shared/locale/types'
-import { FIRESTORE_COLLECTIONS } from '../../../shared/types/firestore'
-import type { Department } from '../../../shared/types/firestore/department.model'
+import { firestoreManager } from '../../../../shared/lib/firebase'
+import {
+  isAppError,
+  isRegisterAppErrorCode,
+  resolveRegisterErrorMessage,
+} from '../../../../shared/errors'
+import type { RegisterMessages } from '../../../../shared/locale/types'
+import { FIRESTORE_COLLECTIONS } from '../../../../shared/types/firestore'
+import type { Department } from '../../../../shared/types/firestore/department.model'
 import { registerRepository } from '../data/register.repository.instance'
 import type { DepartmentOption, RegistrationRole } from '../model/types'
 import { isValidDpuStudentEmail, isValidDpuTeacherEmail } from '../utils/dpuEmailPolicy'
@@ -155,7 +159,7 @@ export function useRegisterViewModel(messages: RegisterMessages) {
       })
       setStatus({ kind: 'success', message: messages.successSignup })
     } catch (err) {
-      if (isAppError(err)) {
+      if (isAppError(err) && isRegisterAppErrorCode(err.code)) {
         setStatus({
           kind: 'error',
           message: resolveRegisterErrorMessage(err.code, messages),
