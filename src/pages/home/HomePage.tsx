@@ -1,12 +1,17 @@
+import { Link } from 'react-router-dom'
+import { useLocale } from '../../shared/locale'
 import './HomePage.css'
 
 export function HomePage() {
+  const { messages } = useLocale()
+  const h = messages.home
+
   return (
     <main className="home">
-      <h1>universitysss</h1>
-      <p>
-        Üniversite ortamında soru ve cevap paylaşımı için geliştirilen uygulama. İçerik ve arayüz
-        üzerinde çalışmaya devam ediyoruz.
+      <h1>{h.title}</h1>
+      <p>{h.description}</p>
+      <p className="home__cta">
+        <Link to="/register">{h.registerCta}</Link>
       </p>
     </main>
   )
