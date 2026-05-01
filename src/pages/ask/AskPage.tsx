@@ -1,40 +1,13 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useLocale } from '../../shared/locale'
+import type { QuestionTargetAudience } from '../../shared/types/firestore'
 import './AskPage.css'
-
-const QUESTION_CATEGORIES = [
-  'Kayıt & Hesap',
-  'Dersler & Sınavlar',
-  'Bölüm & Fakülte',
-  'Kampüs Hayatı',
-  'Diğer',
-]
-
-type AskStatus = 'idle' | 'submitting' | 'success' | 'error'
+import { useAskQuestionViewModel } from './hooks/useAskQuestionViewModel'
 
 export function AskPage() {
-  const [askTitle, setAskTitle] = useState('')
-  const [askBody, setAskBody] = useState('')
-  const [askCategory, setAskCategory] = useState('')
-  const [askStatus, setAskStatus] = useState<AskStatus>('idle')
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!askTitle.trim() || !askBody.trim() || !askCategory) {
-      setAskStatus('error')
-      return
-    }
-    setAskStatus('submitting')
-    // Gerçek gönderim burada Firebase'e yapılacak
-    setTimeout(() => {
-      setAskStatus('success')
-      setAskTitle('')
-      setAskBody('')
-      setAskCategory('')
-    }, 1200)
-  }
-
-  const resetForm = () => setAskStatus('idle')
+  const { messages } = useLocale()
+  const a = messages.ask
+  const vm = useAskQuestionViewModel(a)
 
   return (
     <main className="ask-dashboard">
@@ -42,13 +15,13 @@ export function AskPage() {
         <div className="ask-sidebar__brand">Akademik Avlu</div>
         <nav className="ask-sidebar__menu" aria-label="Ana menü">
           <Link to="/home" className="ask-nav-item">
-            Ana Sayfa
+            {a.menuHome}
           </Link>
-          <span className="ask-nav-item">Kategoriler</span>
-          <span className="ask-nav-item">Burslar</span>
-          <span className="ask-nav-item">Kayıt İşlemleri</span>
-          <span className="ask-nav-item">Sorularım</span>
-          <span className="ask-nav-item ask-nav-item--active">Soru Sor</span>
+          <span className="ask-nav-item">{a.menuCategories}</span>
+          <span className="ask-nav-item">{a.menuScholarships}</span>
+          <span className="ask-nav-item">{a.menuRegistration}</span>
+          <span className="ask-nav-item">{a.menuMyQuestions}</span>
+          <span className="ask-nav-item ask-nav-item--active">{a.menuAsk}</span>
         </nav>
       </aside>
 
@@ -56,7 +29,7 @@ export function AskPage() {
         <header className="ask-topbar">
           <input
             className="ask-search"
-            placeholder="Sorularda ara veya yeni bir soru sor..."
+            placeholder={a.searchPlaceholder}
             aria-label="Soru arama"
           />
           <div className="ask-topbar__actions">
@@ -72,70 +45,85 @@ export function AskPage() {
         <div className="ask-main-content">
           <section className="ask-form-card">
             <div className="ask-form-card__header">
-              <h1>Soru Sor</h1>
-              <p>Sorunu net bir başlıkla yaz, doğru kategoriyle hızlı cevap al.</p>
+              <h1>{a.pageTitle}</h1>
+              <p>{a.pageSubtitle}</p>
             </div>
 
-            {askStatus === 'success' ? (
+            {vm.status.kind === 'success' ? (
               <div className="ask-success" role="alert">
                 <span className="ask-success__icon" aria-hidden="true">
                   ✓
                 </span>
-                <h2>Sorunuz alındı</h2>
-                <p>Sorunuz incelendikten sonra yayınlanacak. Teşekkür ederiz.</p>
+                <h2>{a.successTitle}</h2>
+                <p>{vm.status.message}</p>
                 <div className="ask-actions">
-                  <button className="ask-btn ask-btn--primary" onClick={resetForm}>
-                    Yeni Soru Sor
+                  <button className="ask-btn ask-btn--primary" onClick={vm.resetFeedback}>
+                    {a.successPrimaryAction}
                   </button>
                   <Link to="/home" className="ask-btn ask-btn--ghost">
-                    Ana Sayfaya Dön
+                    {a.successSecondaryAction}
                   </Link>
                 </div>
               </div>
             ) : (
-              <form className="ask-form" onSubmit={handleSubmit} noValidate>
+              <form
+                className="ask-form"
+                onSubmit={(event) => {
+                  event.preventDefault()
+                  void vm.submit()
+                }}
+                noValidate
+              >
                 <div className="ask-field">
                   <label className="ask-field__label" htmlFor="ask-title">
-                    Soru başlığı <span aria-hidden="true">*</span>
+                    {a.titleLabel} <span aria-hidden="true">*</span>
                   </label>
                   <div className="ask-field__input-wrap">
                     <input
                       id="ask-title"
                       className="ask-field__input"
                       type="text"
-                      placeholder="Sorunuzu kısaca özetleyin..."
-                      value={askTitle}
+                      placeholder={a.titlePlaceholder}
+                      value={vm.title}
                       onChange={(e) => {
-                        setAskTitle(e.target.value)
-                        if (askStatus === 'error') setAskStatus('idle')
+                        vm.setTitle(e.target.value)
+                        if (vm.status.kind === 'error') {
+                          vm.resetFeedback()
+                        }
                       }}
                       maxLength={120}
-                      disabled={askStatus === 'submitting'}
+                      disabled={vm.status.kind === 'submitting'}
                     />
-                    <span className="ask-field__counter">{askTitle.length}/120</span>
+                    <span className="ask-field__counter">{vm.title.length}/120</span>
                   </div>
                 </div>
 
                 <div className="ask-field">
                   <label className="ask-field__label" htmlFor="ask-category">
-                    Kategori <span aria-hidden="true">*</span>
+                    {a.categoryLabel} <span aria-hidden="true">*</span>
                   </label>
                   <select
                     id="ask-category"
                     className="ask-field__select"
-                    value={askCategory}
+                    value={vm.categoryId}
                     onChange={(e) => {
-                      setAskCategory(e.target.value)
-                      if (askStatus === 'error') setAskStatus('idle')
+                      vm.setCategoryId(e.target.value)
+                      if (vm.status.kind === 'error') {
+                        vm.resetFeedback()
+                      }
                     }}
-                    disabled={askStatus === 'submitting'}
+                    disabled={vm.status.kind === 'submitting' || vm.categoriesStatus !== 'ready'}
                   >
                     <option value="" disabled>
-                      Bir kategori seçin...
+                      {vm.categoriesStatus === 'loading'
+                        ? a.categoryLoading
+                        : vm.categoriesStatus === 'error'
+                          ? a.categoryLoadError
+                          : a.categoryPlaceholder}
                     </option>
-                    {QUESTION_CATEGORIES.map((cat) => (
-                      <option key={cat} value={cat}>
-                        {cat}
+                    {vm.categories.map((category) => (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
                       </option>
                     ))}
                   </select>
@@ -143,38 +131,77 @@ export function AskPage() {
 
                 <div className="ask-field">
                   <label className="ask-field__label" htmlFor="ask-body">
-                    Detaylar <span aria-hidden="true">*</span>
+                    {a.contentLabel} <span aria-hidden="true">*</span>
                   </label>
                   <textarea
                     id="ask-body"
                     className="ask-field__textarea"
-                    placeholder="Sorunuzu detaylandırın, ne denediğinizi belirtin..."
+                    placeholder={a.contentPlaceholder}
                     rows={8}
-                    value={askBody}
+                    value={vm.content}
                     onChange={(e) => {
-                      setAskBody(e.target.value)
-                      if (askStatus === 'error') setAskStatus('idle')
+                      vm.setContent(e.target.value)
+                      if (vm.status.kind === 'error') {
+                        vm.resetFeedback()
+                      }
                     }}
-                    disabled={askStatus === 'submitting'}
+                    disabled={vm.status.kind === 'submitting'}
                   />
                 </div>
 
-                {askStatus === 'error' ? (
+                <div className="ask-field">
+                  <label className="ask-field__label" htmlFor="ask-target-audience">
+                    {a.targetAudienceLabel}
+                  </label>
+                  <select
+                    id="ask-target-audience"
+                    className="ask-field__select"
+                    value={vm.targetAudience}
+                    onChange={(event) => {
+                      vm.setTargetAudience(event.target.value as QuestionTargetAudience)
+                      if (vm.status.kind === 'error') {
+                        vm.resetFeedback()
+                      }
+                    }}
+                    disabled={vm.status.kind === 'submitting'}
+                  >
+                    <option value="everyone">{a.targetAudienceEveryone}</option>
+                    <option value="to_student">{a.targetAudienceToStudent}</option>
+                    <option value="to_teacher">{a.targetAudienceToTeacher}</option>
+                  </select>
+                </div>
+
+                <label className="ask-checkbox">
+                  <input
+                    type="checkbox"
+                    checked={vm.isAnonymous}
+                    onChange={(event) => {
+                      vm.setIsAnonymous(event.target.checked)
+                      if (vm.status.kind === 'error') {
+                        vm.resetFeedback()
+                      }
+                    }}
+                    disabled={vm.status.kind === 'submitting'}
+                  />
+                  <span>{a.anonymousLabel}</span>
+                </label>
+
+                {vm.status.kind === 'error' ? (
                   <p className="ask-error" role="alert">
-                    Lütfen tüm alanları doldurun.
+                    {vm.status.message}
                   </p>
                 ) : null}
 
                 <div className="ask-actions">
                   <Link to="/home" className="ask-btn ask-btn--ghost">
-                    İptal
+                    {a.cancelButton}
                   </Link>
                   <button
                     type="submit"
                     className="ask-btn ask-btn--primary"
-                    disabled={askStatus === 'submitting'}
+                    disabled={vm.status.kind === 'submitting'}
                   >
-                    {askStatus === 'submitting' ? 'Gönderiliyor...' : 'Soruyu Gönder'}
+                    {vm.status.kind === 'submitting' ? a.submitLoading : a.submitButton}
                   </button>
                 </div>
               </form>
@@ -183,18 +210,18 @@ export function AskPage() {
 
           <aside className="ask-sidepanel">
             <section className="ask-widget">
-              <h2>İpucu</h2>
+              <h2>{a.tipsTitle}</h2>
               <ul>
-                <li>Sorunu kısa ve net bir başlıkla yaz.</li>
-                <li>Hangi adımları denediğini ekle.</li>
-                <li>Kategori seçimi doğru olursa görünürlük artar.</li>
+                {a.tipsItems.map((tip) => (
+                  <li key={tip}>{tip}</li>
+                ))}
               </ul>
             </section>
             <section className="ask-widget">
-              <h2>Örnek Kategoriler</h2>
+              <h2>{a.sampleCategoriesTitle}</h2>
               <div className="ask-tags">
-                {QUESTION_CATEGORIES.map((category) => (
-                  <span key={category}>{category}</span>
+                {vm.categories.map((category) => (
+                  <span key={category.id}>{category.name}</span>
                 ))}
               </div>
             </section>
