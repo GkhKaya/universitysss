@@ -15,7 +15,7 @@ export function LoginPage() {
 
   useEffect(() => {
     if (vm.status.kind === 'success') {
-      const timer = window.setTimeout(() => navigate('/'), 1400)
+      const timer = window.setTimeout(() => navigate('/home'), 1400)
       return () => window.clearTimeout(timer)
     }
   }, [vm.status, navigate])
