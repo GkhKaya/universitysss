@@ -75,8 +75,52 @@ export type LoginMessages = {
   successLogin: string
 }
 
+export type AskMessages = {
+  pageTitle: string
+  pageSubtitle: string
+  searchPlaceholder: string
+  menuHome: string
+  menuCategories: string
+  menuScholarships: string
+  menuRegistration: string
+  menuMyQuestions: string
+  menuAsk: string
+  titleLabel: string
+  titlePlaceholder: string
+  categoryLabel: string
+  categoryPlaceholder: string
+  categoryLoading: string
+  categoryLoadError: string
+  contentLabel: string
+  contentPlaceholder: string
+  anonymousLabel: string
+  targetAudienceLabel: string
+  targetAudienceEveryone: string
+  targetAudienceToStudent: string
+  targetAudienceToTeacher: string
+  submitButton: string
+  submitLoading: string
+  cancelButton: string
+  successTitle: string
+  successDescription: string
+  successPrimaryAction: string
+  successSecondaryAction: string
+  tipsTitle: string
+  tipsItems: string[]
+  sampleCategoriesTitle: string
+  errorRequired: string
+  errorCategoryRequired: string
+  errorTitleTooLong: string
+  errorContentTooShort: string
+  errorUnauthenticated: string
+  errorProfileNotFound: string
+  errorCategoryNotFound: string
+  errorCreateFailed: string
+}
+
 export type AppMessages = {
   register: RegisterMessages
   login: LoginMessages
   home: HomeMessages
+  ask: AskMessages
 }
