@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useAuth } from '../../shared/auth'
 import { useLocale } from '../../shared/locale'
 import { useTheme } from '../../shared/theme'
 import { useMyQuestionsViewModel } from './hooks/useMyQuestionsViewModel'
@@ -26,6 +27,7 @@ export function MyQuestionsPage() {
   const { messages } = useLocale()
   const m = messages.myQuestions
   const { theme, toggleTheme } = useTheme()
+  const { logout } = useAuth()
   const { questions, status } = useMyQuestionsViewModel()
   const [filter, setFilter] = useState<FilterStatus>('all')
 
@@ -75,9 +77,18 @@ export function MyQuestionsPage() {
             <button type="button" className="mq-top-icon" aria-label="Bildirimler">
               🔔
             </button>
-            <span className="mq-avatar" aria-hidden="true">
+            <span className="mq-avatar" aria-hidden="true" title="Profil">
               G
             </span>
+            <button
+              type="button"
+              className="mq-top-icon"
+              aria-label="Çıkış yap"
+              onClick={logout}
+              title="Çıkış yap"
+            >
+              🚪
+            </button>
           </div>
         </header>
 
