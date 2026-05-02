@@ -118,9 +118,32 @@ export type AskMessages = {
   errorCreateFailed: string
 }
 
+export type MyQuestionsMessages = {
+  pageTitle: string
+  pageSubtitle: string
+  menuHome: string
+  menuCategories: string
+  menuScholarships: string
+  menuRegistration: string
+  menuMyQuestions: string
+  menuAsk: string
+  searchPlaceholder: string
+  emptyTitle: string
+  emptySubtitle: string
+  askButton: string
+  statusAll: string
+  statusPending: string
+  statusAnswered: string
+  questionAnswers: string
+  questionLikes: string
+  questionPending: string
+  questionAnswered: string
+}
+
 export type AppMessages = {
   register: RegisterMessages
   login: LoginMessages
   home: HomeMessages
   ask: AskMessages
+  myQuestions: MyQuestionsMessages
 }

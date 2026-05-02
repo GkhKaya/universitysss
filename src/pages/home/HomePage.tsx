@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import './HomePage.css'
 
@@ -54,6 +55,24 @@ const TOP_USERS = [
 ]
 
 export function HomePage() {
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
+    }
+    return 'light'
+  })
+
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark'
+    setTheme(next)
+    document.documentElement.setAttribute('data-theme', next)
+    if (next === 'dark') {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }
+
   return (
     <main className="home-dashboard">
       <aside className="home-sidebar">
@@ -72,9 +91,9 @@ export function HomePage() {
           <button className="home-nav-item" type="button">
             Kayıt İşlemleri
           </button>
-          <button className="home-nav-item" type="button">
+          <Link to="/my-questions" className="home-nav-item" style={{ display: 'block' }}>
             Sorularım
-          </button>
+          </Link>
         </nav>
 
         <section className="home-filter-block">
@@ -99,6 +118,15 @@ export function HomePage() {
             aria-label="Soru arama"
           />
           <div className="home-topbar__actions">
+            <button
+              type="button"
+              className="home-theme-toggle"
+              aria-label="Tema değiştir"
+              onClick={toggleTheme}
+              title={theme === 'dark' ? 'Açık temaya geç' : 'Koyu temaya geç'}
+            >
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
             <button type="button" className="home-top-icon" aria-label="Bildirimler">
               🔔
             </button>
