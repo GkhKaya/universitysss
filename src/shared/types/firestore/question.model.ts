@@ -12,7 +12,6 @@ export interface Question {
   authorId: string
   authorName: string
   authorRoleId: string
-  /** İsim kartlarda/listede gizlenir */
   isAnonymous: boolean
   departmentId: string
   categoryId: string
@@ -23,6 +22,5 @@ export interface Question {
   answerIds: string[]
   voteCount: number
   createdAt: Timestamp
-  /** Düzenleme veya durum vb. güncellemelerde set edilir */
   updatedAt: Timestamp
 }

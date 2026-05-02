@@ -1,213 +1,179 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import './HomePage.css'
 
-interface FaqItem {
+interface FeedItem {
   id: string
-  question: string
-  answer: string
+  title: string
+  excerpt: string
+  tag: string
   category: string
+  timeAgo: string
+  answers: number
+  likes: number
+  author: string
+  verified?: boolean
 }
 
-const FAQ_ITEMS: FaqItem[] = [
+const FEED_ITEMS: FeedItem[] = [
   {
-    id: 'faq-1',
-    category: 'Kayıt & Hesap',
-    question: 'Platforma nasıl kayıt olabilirim?',
-    answer:
-      'Kayıt olmak için sağ üstteki "Kayıt Ol" butonuna tıklayın. Üniversite e-posta adresinizi (öğrenciler için @ogr.dpu.edu.tr, öğretmenler için @dpu.edu.tr), adınızı, bölümünüzü ve şifrenizi girerek hesabınızı oluşturabilirsiniz.',
+    id: 'post-1',
+    title: 'Staj başvuruları ne zaman başlıyor?',
+    excerpt:
+      '2024-2025 Eğitim-Öğretim yılı yaz dönemi zorunlu staj başvuruları 15 Mayıs’ta başlıyor, 15 Haziran’da sona erecek. Başvurular Öğrenci İşleri Bilgi Sistemi üzerinden online olarak yapılmalıdır.',
+    tag: 'Resmi Duyuru',
+    category: 'STAJ',
+    timeAgo: '2 saat önce',
+    answers: 8,
+    likes: 42,
+    author: 'Öğrenci İşleri',
+    verified: true,
   },
   {
-    id: 'faq-2',
-    category: 'Kayıt & Hesap',
-    question: 'Hangi e-posta adresiyle kayıt olabilirim?',
-    answer:
-      'Yalnızca Dumlupınar Üniversitesi kurumsal e-posta adresleriyle kayıt yapılabilmektedir. Öğrenciler @ogr.dpu.edu.tr, öğretmenler ise @dpu.edu.tr uzantılı adreslerini kullanmalıdır.',
-  },
-  {
-    id: 'faq-3',
-    category: 'Sorular & Cevaplar',
-    question: 'Soru nasıl sorabilirim?',
-    answer:
-      'Hesabınıza giriş yaptıktan sonra "Soru Sor" butonuna tıklayarak yeni bir soru oluşturabilirsiniz. Sorunuzu ilgili kategoriye atayabilir, detaylı açıklama ekleyebilirsiniz.',
-  },
-  {
-    id: 'faq-4',
-    category: 'Sorular & Cevaplar',
-    question: 'Başkalarının sorularını görebilir miyim?',
-    answer:
-      'Evet, platformdaki tüm soruları giriş yapmadan da görüntüleyebilirsiniz. Ancak cevap vermek veya yorum yapmak için hesap oluşturmanız gerekmektedir.',
-  },
-  {
-    id: 'faq-5',
-    category: 'Sorular & Cevaplar',
-    question: 'En faydalı cevabı nasıl seçebilirim?',
-    answer:
-      'Soruyu soran kişi, verilen cevaplar arasından en doğru bulduğunu "kabul edildi" olarak işaretleyebilir. Bu sayede diğer kullanıcılar en doğru cevabı kolayca bulabilir.',
-  },
-  {
-    id: 'faq-6',
-    category: 'Platform & Kullanım',
-    question: 'Platform hangi dilleri destekliyor?',
-    answer:
-      'Platform şu anda Türkçe ve İngilizce dillerini desteklemektedir. Dil tercihini ekranın sağ üst köşesindeki dil seçicisinden değiştirebilirsiniz.',
-  },
-  {
-    id: 'faq-7',
-    category: 'Platform & Kullanım',
-    question: 'Yanlış veya uygunsuz içerikleri nasıl bildirebilirim?',
-    answer:
-      'Her soru ve cevabın yanında bulunan "Bildir" butonuna tıklayarak uygunsuz içerikleri yöneticilere bildirebilirsiniz. Ekibimiz bildirimleri en kısa sürede inceleyecektir.',
+    id: 'post-2',
+    title: 'Yemekhane menüsüne nereden ulaşabilirim? Haftalık liste yayınlanıyor mu?',
+    excerpt:
+      'Sağlık Kültür ve Spor Daire Başkanlığı sayfasında aylık menüler yayınlanıyor ancak bazen günlük değişiklikler olabiliyor. Üniversitenin mobil uygulamasındaki yemek kartını da takip etmenizi öneririm.',
+    tag: 'Kampüs Bilgisi',
+    category: 'YEMEKHANE',
+    timeAgo: '5 saat önce',
+    answers: 3,
+    likes: 15,
+    author: 'Ahmet K.',
   },
 ]
 
-const CATEGORIES = [...new Set(FAQ_ITEMS.map((f) => f.category))]
+const POPULAR_ITEMS = [
+  'Vize sınav takvimi ne zaman açıklanacak?',
+  'Kütüphane çalışma saatleri uzatıldı mı?',
+  'Erasmus + dil sınavı baraj puanı kaç?',
+]
+
+const TOP_USERS = [
+  { name: 'Zeynep Yılmaz', major: 'Bilgisayar Müh.', score: 450 },
+  { name: 'Caner Kaya', major: 'Mimarlık', score: 380 },
+]
 
 export function HomePage() {
-  const [openId, setOpenId] = useState<string | null>(null)
-  const [activeCategory, setActiveCategory] = useState<string>('Tümü')
-
-  const toggle = (id: string) => {
-    setOpenId((prev) => (prev === id ? null : id))
-  }
-
-  const filtered =
-    activeCategory === 'Tümü'
-      ? FAQ_ITEMS
-      : FAQ_ITEMS.filter((f) => f.category === activeCategory)
-
   return (
-    <main className="home-page">
-      {/* ── Hero ────────────────────────────────────── */}
-      <section className="home-hero">
-        <div className="home-hero__badge">Dumlupınar Üniversitesi</div>
-        <h1 className="home-hero__title">
-          Aklındaki soruların
-          <br />
-          <span className="home-hero__accent">cevapları burada.</span>
-        </h1>
-        <p className="home-hero__subtitle">
-          Üniversite yaşamına dair merak ettiklerini sor, öğret, paylaş.
-          Akademik topluluğun gücünden yararlan.
-        </p>
-        <div className="home-hero__actions">
-          <Link to="/register" className="home-btn home-btn--primary">
-            Hemen Katıl
-          </Link>
-          <Link to="/ask" className="home-btn home-btn--ghost">
-            Soru Sor →
-          </Link>
-        </div>
+    <main className="home-dashboard">
+      <aside className="home-sidebar">
+        <div className="home-sidebar__brand">Akademik Avlu</div>
 
-        {/* Stats */}
-        <div className="home-stats">
-          <div className="home-stats__item">
-            <span className="home-stats__value">500+</span>
-            <span className="home-stats__label">Soru</span>
-          </div>
-          <div className="home-stats__divider" aria-hidden="true" />
-          <div className="home-stats__item">
-            <span className="home-stats__value">1.200+</span>
-            <span className="home-stats__label">Cevap</span>
-          </div>
-          <div className="home-stats__divider" aria-hidden="true" />
-          <div className="home-stats__item">
-            <span className="home-stats__value">300+</span>
-            <span className="home-stats__label">Üye</span>
-          </div>
-        </div>
-      </section>
+        <nav className="home-sidebar__menu" aria-label="Ana menü">
+          <button className="home-nav-item home-nav-item--active" type="button">
+            Ana Sayfa
+          </button>
+          <button className="home-nav-item" type="button">
+            Kategoriler
+          </button>
+          <button className="home-nav-item" type="button">
+            Burslar
+          </button>
+          <button className="home-nav-item" type="button">
+            Kayıt İşlemleri
+          </button>
+          <button className="home-nav-item" type="button">
+            Sorularım
+          </button>
+        </nav>
 
-      {/* ── FAQ ─────────────────────────────────────── */}
-      <section className="home-faq" id="faq">
-        <div className="home-faq__header">
-          <h2 className="home-faq__title">Sıkça Sorulan Sorular</h2>
-          <p className="home-faq__subtitle">
-            Platformu kullanmadan önce merak ettiklerinize göz atın.
-          </p>
-        </div>
+        <section className="home-filter-block">
+          <h2>Hızlı Filtreler</h2>
+          <ul>
+            <li>Genel SSS</li>
+            <li>Öğretmene Sor</li>
+            <li>Öğrenciye Sor</li>
+          </ul>
+        </section>
 
-        {/* Category filter pills */}
-        <div className="home-faq__filters" role="group" aria-label="Kategori filtresi">
-          {['Tümü', ...CATEGORIES].map((cat) => (
-            <button
-              key={cat}
-              className={`home-faq__pill${activeCategory === cat ? ' home-faq__pill--active' : ''}`}
-              onClick={() => {
-                setActiveCategory(cat)
-                setOpenId(null)
-              }}
-            >
-              {cat}
+        <Link to="/ask" className="home-ask-button">
+          + Soru Sor
+        </Link>
+      </aside>
+
+      <section className="home-main">
+        <header className="home-topbar">
+          <input
+            className="home-search"
+            placeholder="Sorularda ara veya yeni bir soru sor..."
+            aria-label="Soru arama"
+          />
+          <div className="home-topbar__actions">
+            <button type="button" className="home-top-icon" aria-label="Bildirimler">
+              🔔
             </button>
-          ))}
-        </div>
+            <span className="home-avatar" aria-hidden="true">
+              G
+            </span>
+          </div>
+        </header>
 
-        {/* Accordion list */}
-        <div className="home-faq__list">
-          {filtered.map((item) => {
-            const isOpen = openId === item.id
-            return (
-              <div
-                key={item.id}
-                className={`home-faq__item${isOpen ? ' home-faq__item--open' : ''}`}
-              >
-                <button
-                  id={`${item.id}-btn`}
-                  className="home-faq__question"
-                  aria-expanded={isOpen}
-                  aria-controls={`${item.id}-answer`}
-                  onClick={() => toggle(item.id)}
-                >
-                  <span className="home-faq__question-text">{item.question}</span>
-                  <span className="home-faq__chevron" aria-hidden="true">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                      <path
-                        d="M5 7.5L10 12.5L15 7.5"
-                        stroke="currentColor"
-                        strokeWidth="1.75"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                </button>
+        <div className="home-main-content">
+          <section className="home-feed">
+            <div className="home-feed__header">
+              <h1>Güncel Sorular</h1>
+              <button type="button" className="home-filter-button">
+                Filtrele
+              </button>
+            </div>
 
-                <div
-                  id={`${item.id}-answer`}
-                  role="region"
-                  aria-labelledby={`${item.id}-btn`}
-                  className="home-faq__answer-wrapper"
-                  hidden={!isOpen}
-                >
-                  <p className="home-faq__answer">{item.answer}</p>
-                </div>
-              </div>
-            )
-          })}
-        </div>
+            <div className="home-feed__list">
+              {FEED_ITEMS.map((item) => (
+                <article key={item.id} className="home-post-card">
+                  <div className="home-post-card__meta">
+                    <span className="home-tag">
+                      {item.verified ? 'Onaylı • ' : ''}
+                      {item.tag}
+                    </span>
+                    <span>{item.timeAgo}</span>
+                  </div>
 
-        {/* Alt link — soru sor */}
-        <div className="home-faq__footer">
-          <p className="home-faq__footer-text">
-            Aradığını bulamadın mı?
-          </p>
-          <Link to="/ask" className="home-btn home-btn--primary">
-            Soru Sor
-          </Link>
-        </div>
-      </section>
+                  <h2>{item.title}</h2>
+                  <p>{item.excerpt}</p>
 
-      {/* ── CTA Banner ──────────────────────────────── */}
-      <section className="home-cta">
-        <div className="home-cta__inner">
-          <h2 className="home-cta__title">Topluluğa katılmaya hazır mısın?</h2>
-          <p className="home-cta__desc">
-            Üniversite e-posta adresinle birkaç saniyede hesap oluştur.
-          </p>
-          <Link to="/register" className="home-btn home-btn--primary home-btn--lg">
-            Kayıt Ol
-          </Link>
+                  <div className="home-post-card__chips">
+                    <span>{item.category}</span>
+                    <span>Kariyer Merkezi</span>
+                  </div>
+
+                  <div className="home-post-card__footer">
+                    <div className="home-post-card__stats">
+                      <span>👍 {item.likes}</span>
+                      <span>💬 {item.answers} Yanıt</span>
+                    </div>
+                    <span className="home-post-card__author">{item.author}</span>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <aside className="home-widgets">
+            <section className="home-widget-card">
+              <h2>Popüler Sorular</h2>
+              <ul>
+                {POPULAR_ITEMS.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </section>
+
+            <section className="home-widget-card">
+              <h2>En Çok Katkıda Bulunanlar</h2>
+              <ul>
+                {TOP_USERS.map((user) => (
+                  <li key={user.name} className="home-user-row">
+                    <span className="home-user-avatar">{user.name.charAt(0)}</span>
+                    <div>
+                      <strong>{user.name}</strong>
+                      <small>{user.major}</small>
+                    </div>
+                    <span className="home-user-score">+{user.score}</span>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          </aside>
         </div>
       </section>
     </main>
