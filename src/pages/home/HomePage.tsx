@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom'
+import { useAuth } from '../../shared/auth'
+import { useTheme } from '../../shared/theme'
 import './HomePage.css'
 
 interface FeedItem {
@@ -54,6 +56,9 @@ const TOP_USERS = [
 ]
 
 export function HomePage() {
+  const { theme, toggleTheme } = useTheme()
+  const { logout } = useAuth()
+
   return (
     <main className="home-dashboard">
       <aside className="home-sidebar">
@@ -72,9 +77,9 @@ export function HomePage() {
           <button className="home-nav-item" type="button">
             Kayıt İşlemleri
           </button>
-          <button className="home-nav-item" type="button">
+          <Link to="/my-questions" className="home-nav-item" style={{ display: 'block' }}>
             Sorularım
-          </button>
+          </Link>
         </nav>
 
         <section className="home-filter-block">
@@ -99,12 +104,30 @@ export function HomePage() {
             aria-label="Soru arama"
           />
           <div className="home-topbar__actions">
+            <button
+              type="button"
+              className="home-theme-toggle"
+              aria-label="Tema değiştir"
+              onClick={toggleTheme}
+              title={theme === 'dark' ? 'Açık temaya geç' : 'Koyu temaya geç'}
+            >
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
             <button type="button" className="home-top-icon" aria-label="Bildirimler">
               🔔
             </button>
-            <span className="home-avatar" aria-hidden="true">
+            <span className="home-avatar" aria-hidden="true" title="Profil">
               G
             </span>
+            <button
+              type="button"
+              className="home-top-icon"
+              aria-label="Çıkış yap"
+              onClick={logout}
+              title="Çıkış yap"
+            >
+              🚪
+            </button>
           </div>
         </header>
 
