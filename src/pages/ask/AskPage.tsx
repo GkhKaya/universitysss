@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
+import { useAuth } from '../../shared/auth'
 import { useLocale } from '../../shared/locale'
+import { useTheme } from '../../shared/theme'
 import type { QuestionTargetAudience } from '../../shared/types/firestore'
 import './AskPage.css'
 import { useAskQuestionViewModel } from './hooks/useAskQuestionViewModel'
@@ -8,6 +10,8 @@ export function AskPage() {
   const { messages } = useLocale()
   const a = messages.ask
   const vm = useAskQuestionViewModel(a)
+  const { theme, toggleTheme } = useTheme()
+  const { logout } = useAuth()
 
   return (
     <main className="ask-dashboard">
@@ -20,7 +24,7 @@ export function AskPage() {
           <span className="ask-nav-item">{a.menuCategories}</span>
           <span className="ask-nav-item">{a.menuScholarships}</span>
           <span className="ask-nav-item">{a.menuRegistration}</span>
-          <span className="ask-nav-item">{a.menuMyQuestions}</span>
+          <Link to="/my-questions" className="ask-nav-item">{a.menuMyQuestions}</Link>
           <span className="ask-nav-item ask-nav-item--active">{a.menuAsk}</span>
         </nav>
       </aside>
@@ -33,12 +37,30 @@ export function AskPage() {
             aria-label="Soru arama"
           />
           <div className="ask-topbar__actions">
+            <button
+              type="button"
+              className="ask-theme-toggle"
+              aria-label="Tema değiştir"
+              onClick={toggleTheme}
+              title={theme === 'dark' ? 'Açık temaya geç' : 'Koyu temaya geç'}
+            >
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
             <button type="button" className="ask-top-icon" aria-label="Bildirimler">
               🔔
             </button>
-            <span className="ask-avatar" aria-hidden="true">
+            <span className="ask-avatar" aria-hidden="true" title="Profil">
               G
             </span>
+            <button
+              type="button"
+              className="ask-top-icon"
+              aria-label="Çıkış yap"
+              onClick={logout}
+              title="Çıkış yap"
+            >
+              🚪
+            </button>
           </div>
         </header>
 

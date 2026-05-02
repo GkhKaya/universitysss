@@ -1,0 +1,450 @@
+.mq-dashboard,
+.mq-dashboard * {
+  box-sizing: border-box;
+}
+
+.mq-dashboard {
+  display: flex;
+  gap: 1.5rem;
+  min-height: 100vh;
+  padding: 1rem;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
+
+/* ── Sidebar ───────────────────────────────────────────── */
+.mq-sidebar {
+  width: 250px;
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background: var(--color-bg-elevated);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+.mq-sidebar__brand {
+  color: var(--color-accent);
+  font-size: 1.05rem;
+  font-weight: 800;
+  padding: 0.25rem 0.4rem;
+}
+
+.mq-sidebar__menu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.mq-nav-item {
+  border: none;
+  background: transparent;
+  border-radius: 0.6rem;
+  padding: 0.65rem 0.75rem;
+  text-align: left;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  display: block;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.mq-nav-item:hover {
+  background: var(--color-bg-muted);
+  color: var(--color-text);
+}
+
+.mq-nav-item--active {
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  color: var(--color-accent);
+}
+
+.mq-nav-item--active:hover {
+  background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+  color: var(--color-accent);
+}
+
+.mq-sidebar__ask-btn {
+  margin-top: auto;
+  background: var(--color-accent);
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  border-radius: 0.7rem;
+  padding: 0.75rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  display: block;
+  transition: background 0.15s ease;
+}
+
+.mq-sidebar__ask-btn:hover {
+  background: var(--color-accent-hover);
+  color: #fff;
+}
+
+/* ── Main ──────────────────────────────────────────────── */
+.mq-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  min-width: 0;
+}
+
+/* ── Topbar ────────────────────────────────────────────── */
+.mq-topbar {
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  background: var(--color-bg-elevated);
+  padding: 0.65rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.mq-search {
+  flex: 1;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  height: 2.2rem;
+  padding: 0 0.9rem;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  background: var(--color-bg-muted);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.mq-search:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
+}
+
+.mq-search::placeholder {
+  color: var(--color-text-subtle);
+}
+
+.mq-topbar__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.mq-top-icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-elevated);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: background 0.15s ease;
+}
+
+.mq-top-icon:hover {
+  background: var(--color-bg-muted);
+}
+
+.mq-avatar {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  background: var(--color-text);
+  color: var(--color-bg);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+/* ── Dark mode toggle ──────────────────────────────────── */
+.mq-theme-toggle {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border);
+  background: var(--color-bg-elevated);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  transition: background 0.15s ease, transform 0.2s ease;
+}
+
+.mq-theme-toggle:hover {
+  background: var(--color-bg-muted);
+  transform: rotate(15deg);
+}
+
+/* ── Content area ──────────────────────────────────────── */
+.mq-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ── Filter tabs ───────────────────────────────────────── */
+.mq-filters {
+  display: flex;
+  gap: 0.5rem;
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  padding: 0.75rem 1rem;
+  flex-wrap: wrap;
+}
+
+.mq-filter-btn {
+  border: 1px solid var(--color-border);
+  background: transparent;
+  border-radius: 999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.mq-filter-btn:hover {
+  background: var(--color-bg-muted);
+  color: var(--color-text);
+}
+
+.mq-filter-btn--active {
+  background: var(--color-accent);
+  color: #fff;
+  border-color: var(--color-accent);
+}
+
+.mq-filter-btn--active:hover {
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+  color: #fff;
+}
+
+/* ── Question cards ────────────────────────────────────── */
+.mq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.mq-card {
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: 1rem;
+  padding: 1.1rem 1.25rem;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.mq-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-border-strong);
+}
+
+.mq-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.mq-card__title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.35;
+}
+
+.mq-card__status {
+  flex-shrink: 0;
+  border-radius: 999px;
+  padding: 0.22rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.mq-card__status--pending {
+  background: color-mix(in srgb, var(--color-warning) 15%, transparent);
+  color: var(--color-warning-text);
+  border: 1px solid color-mix(in srgb, var(--color-warning) 30%, transparent);
+}
+
+.mq-card__status--answered {
+  background: color-mix(in srgb, var(--color-success) 15%, transparent);
+  color: var(--color-success-text);
+  border: 1px solid color-mix(in srgb, var(--color-success) 30%, transparent);
+}
+
+[data-theme='dark'] .mq-card__status--pending,
+.dark .mq-card__status--pending {
+  color: var(--color-warning);
+}
+
+[data-theme='dark'] .mq-card__status--answered,
+.dark .mq-card__status--answered {
+  color: var(--color-success);
+}
+
+.mq-card__excerpt {
+  margin: 0 0 0.75rem;
+  color: var(--color-text-muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.mq-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.mq-card__chip {
+  background: var(--color-bg-muted);
+  color: var(--color-text-subtle);
+  border-radius: 0.4rem;
+  padding: 0.18rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.mq-card__stat {
+  font-size: 0.82rem;
+  color: var(--color-text-subtle);
+}
+
+.mq-card__time {
+  margin-left: auto;
+  font-size: 0.78rem;
+  color: var(--color-text-subtle);
+}
+
+/* ── Empty state ───────────────────────────────────────── */
+.mq-empty {
+  background: var(--color-bg-elevated);
+  border: 1px dashed var(--color-border);
+  border-radius: 1rem;
+  padding: 3rem 1.5rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.mq-empty__icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.mq-empty__title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.mq-empty__subtitle {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.mq-empty__btn {
+  margin-top: 0.5rem;
+  background: var(--color-accent);
+  color: #fff;
+  border: none;
+  border-radius: 0.7rem;
+  padding: 0.65rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  display: inline-block;
+}
+
+.mq-empty__btn:hover {
+  background: var(--color-accent-hover);
+  color: #fff;
+}
+
+/* ── Loading state ─────────────────────────────────────── */
+.mq-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem 1.5rem;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.mq-loading__spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: mq-spin 0.8s linear infinite;
+}
+
+@keyframes mq-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Error state ───────────────────────────────────────── */
+.mq-error {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: color-mix(in srgb, var(--color-error, #b91c1c) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-error, #b91c1c) 30%, transparent);
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  color: var(--color-error, #b91c1c);
+  font-size: 0.9rem;
+}
+
+
+@media (max-width: 1080px) {
+  .mq-dashboard {
+    flex-direction: column;
+  }
+
+  .mq-sidebar {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .mq-card__header {
+    flex-direction: column;
+  }
+
+  .mq-filters {
+    gap: 0.4rem;
+  }
+}
