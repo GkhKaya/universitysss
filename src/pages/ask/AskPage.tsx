@@ -3,6 +3,7 @@ import { useAuth, useCanAccessQuestionApprovals } from '../../shared/auth'
 import { useLocale } from '../../shared/locale'
 import { useTheme } from '../../shared/theme'
 import type { QuestionTargetAudience } from '../../shared/types/firestore'
+import { Sidebar } from '../../shared/components/Sidebar'
 import './AskPage.css'
 import { useAskQuestionViewModel } from './hooks/useAskQuestionViewModel'
 
@@ -16,24 +17,7 @@ export function AskPage() {
 
   return (
     <main className="ask-dashboard">
-      <aside className="ask-sidebar">
-        <div className="ask-sidebar__brand">Akademik Avlu</div>
-        <nav className="ask-sidebar__menu" aria-label="Ana menü">
-          <Link to="/home" className="ask-nav-item">
-            {a.menuHome}
-          </Link>
-          <span className="ask-nav-item">{a.menuCategories}</span>
-          <span className="ask-nav-item">{a.menuScholarships}</span>
-          <span className="ask-nav-item">{a.menuRegistration}</span>
-          <Link to="/my-questions" className="ask-nav-item">{a.menuMyQuestions}</Link>
-          <span className="ask-nav-item ask-nav-item--active">{a.menuAsk}</span>
-          {canOpenApprovals ? (
-            <Link to="/question-approvals" className="ask-nav-item">
-              {messages.questionApprovals.menuApprovals}
-            </Link>
-          ) : null}
-        </nav>
-      </aside>
+      <Sidebar />
 
       <section className="ask-main">
         <header className="ask-topbar">

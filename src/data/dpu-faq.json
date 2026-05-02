@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "question": "Kütahya Dumlupınar Üniversitesi Ana Kampüsü neresidir?",
+    "answer": "Üniversitemizin ana kampüsü Evliya Çelebi Yerleşkesi'dir. Kütahya - Tavşanlı yolu üzerinde bulunmaktadır ve rektörlük ile pek çok fakülte bu yerleşkede yer almaktadır."
+  },
+  {
+    "id": 2,
+    "question": "Merkez Kütüphane çalışma saatleri nelerdir?",
+    "answer": "Şehit Astsubay Ömer Halisdemir Kütüphanesi eğitim-öğretim dönemleri boyunca hafta içi 08:30 - 23:00, hafta sonları ise 10:00 - 18:00 saatleri arasında hizmet vermektedir. Vize ve final dönemlerinde çalışma saatleri 24 saat olacak şekilde uzatılabilmektedir."
+  },
+  {
+    "id": 3,
+    "question": "Kampüs içi ulaşım (Ring) ücretli mi?",
+    "answer": "Evliya Çelebi Yerleşkesi içerisinde çalışan ring araçları öğrencilerimiz için tamamen ücretsizdir. Ringler ring duraklarından kalkıp tüm fakülteleri dolaşmaktadır."
+  },
+  {
+    "id": 4,
+    "question": "Yemekhane menüsünü ve fiyatlarını nereden öğrenebilirim?",
+    "answer": "Günlük yemekhane menüsüne Sağlık, Kültür ve Spor Daire Başkanlığı (SKS) web sitesi üzerinden veya DPÜ Mobil uygulamasından ulaşabilirsiniz. Öğrenci yemek ücretleri her akademik yıl başında SKS tarafından duyurulmaktadır."
+  },
+  {
+    "id": 5,
+    "question": "Akademik takvime ve sınav tarihlerine nasıl erişebilirim?",
+    "answer": "Güz, Bahar ve Yaz dönemlerini kapsayan Akademik Takvim, Öğrenci İşleri Daire Başkanlığı (oidb.dpu.edu.tr) resmi web sayfasında dönem başlamadan önce yayımlanmaktadır."
+  },
+  {
+    "id": 6,
+    "question": "Öğrenci otomasyon sistemine (OBS) nasıl giriş yapabilirim?",
+    "answer": "obs.dpu.edu.tr adresi üzerinden öğrenci numaranız ve size verilen veya e-devlet ile belirlediğiniz şifre ile giriş yapabilirsiniz. Ders seçimleri ve not görüntüleme işlemleri bu sistem üzerinden yapılmaktadır."
+  }
+]

@@ -4,6 +4,7 @@ import { useAuth, useCanAccessQuestionApprovals } from '../../shared/auth'
 import { useTheme } from '../../shared/theme'
 import { questionRepository } from '../ask/data/question.repository.instance'
 import type { ApprovedQuestion } from '../ask/data/question.repository'
+import { Sidebar } from '../../shared/components/Sidebar'
 import './HomePage.css'
 
 function formatDate(ts: { toDate?: () => Date } | null | undefined): string {
@@ -66,42 +67,16 @@ export function HomePage() {
     const q = search.trim().toLocaleLowerCase('tr-TR')
     if (!q) return approvedQuestions
     return approvedQuestions.filter((item) => {
-      return (
-        item.title.toLocaleLowerCase('tr-TR').includes(q) ||
-        item.content.toLocaleLowerCase('tr-TR').includes(q) ||
-        item.categoryName.toLocaleLowerCase('tr-TR').includes(q)
-      )
+      const title = item.title ? item.title.toLocaleLowerCase('tr-TR') : ''
+      const content = item.content ? item.content.toLocaleLowerCase('tr-TR') : ''
+      const category = item.categoryName ? item.categoryName.toLocaleLowerCase('tr-TR') : ''
+      return title.includes(q) || content.includes(q) || category.includes(q)
     })
   }, [approvedQuestions, search])
 
   return (
     <main className="home-dashboard">
-      <aside className="home-sidebar">
-        <div className="home-sidebar__brand">Akademik Avlu</div>
-
-        <nav className="home-sidebar__menu" aria-label="Ana menü">
-          <button className="home-nav-item home-nav-item--active" type="button">
-            Ana Sayfa
-          </button>
-          <button className="home-nav-item" type="button">
-            Kategoriler
-          </button>
-          <button className="home-nav-item" type="button">
-            Burslar
-          </button>
-          <button className="home-nav-item" type="button">
-            Kayıt İşlemleri
-          </button>
-          <Link to="/my-questions" className="home-nav-item" style={{ display: 'block' }}>
-            Sorularım
-          </Link>
-          {canOpenApprovals ? (
-            <Link to="/question-approvals" className="home-nav-item" style={{ display: 'block' }}>
-              Onay Bekleyen Sorular
-            </Link>
-          ) : null}
-        </nav>
-
+      <Sidebar>
         <section className="home-filter-block">
           <h2>Hızlı Filtreler</h2>
           <ul>
@@ -110,11 +85,7 @@ export function HomePage() {
             <li>Öğrenciye Sor</li>
           </ul>
         </section>
-
-        <Link to="/ask" className="home-ask-button">
-          + Soru Sor
-        </Link>
-      </aside>
+      </Sidebar>
 
       <section className="home-main">
         <header className="home-topbar">
@@ -169,7 +140,20 @@ export function HomePage() {
               <p className="home-feed-state">Sorular alınamadı. Lütfen sayfayı yenileyin.</p>
             ) : null}
             {feedStatus === 'ready' && filteredQuestions.length === 0 ? (
-              <p className="home-feed-state">Onaylı soru bulunamadı.</p>
+              <div className="home-feed-state" style={{ textAlign: 'center', padding: '2rem' }}>
+                <p style={{ marginBottom: '1rem', fontSize: '1.1rem' }}>
+                  {search ? `"${search}" ile ilgili soru bulunamadı.` : "Henüz onaylı soru bulunmamaktadır."}
+                </p>
+                {search && (
+                  <Link 
+                    to={`/ask`} 
+                    className="home-ask-button" 
+                    style={{ display: 'inline-block', width: 'auto', padding: '0.5rem 1.5rem' }}
+                  >
+                    Bu Soruyu Sen Sor
+                  </Link>
+                )}
+              </div>
             ) : null}
 
             {feedStatus === 'ready' && filteredQuestions.length > 0 ? (
@@ -181,7 +165,11 @@ export function HomePage() {
                       <span>{formatDate(item.createdAt)}</span>
                     </div>
 
-                    <h2>{item.title}</h2>
+                    <h2>
+                      <Link to={`/question/${item.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        {item.title}
+                      </Link>
+                    </h2>
                     <p>{item.content}</p>
 
                     <div className="home-post-card__chips">

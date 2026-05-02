@@ -214,4 +214,8 @@ export class QuestionRepository {
       throw new AppError('QUESTION_APPROVAL_UPDATE_FAILED')
     }
   }
+
+  async getQuestionById(questionId: string): Promise<Question | null> {
+    return this.db.getById<Question>(FIRESTORE_COLLECTIONS.questions, questionId)
+  }
 }

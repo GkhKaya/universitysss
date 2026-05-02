@@ -4,6 +4,7 @@ import { useAuth, useCanAccessQuestionApprovals } from '../../shared/auth'
 import { useLocale } from '../../shared/locale'
 import { useTheme } from '../../shared/theme'
 import { useMyQuestionsViewModel } from './hooks/useMyQuestionsViewModel'
+import { Sidebar } from '../../shared/components/Sidebar'
 import './MyQuestionsPage.css'
 
 type FilterStatus = 'all' | 'pending' | 'answered'
@@ -39,29 +40,7 @@ export function MyQuestionsPage() {
 
   return (
     <main className="mq-dashboard">
-      <aside className="mq-sidebar">
-        <div className="mq-sidebar__brand">Akademik Avlu</div>
-        <nav className="mq-sidebar__menu" aria-label="Ana menü">
-          <Link to="/home" className="mq-nav-item">
-            {m.menuHome}
-          </Link>
-          <span className="mq-nav-item">{m.menuCategories}</span>
-          <span className="mq-nav-item">{m.menuScholarships}</span>
-          <span className="mq-nav-item">{m.menuRegistration}</span>
-          <span className="mq-nav-item mq-nav-item--active">{m.menuMyQuestions}</span>
-          <Link to="/ask" className="mq-nav-item">
-            {m.menuAsk}
-          </Link>
-          {canOpenApprovals ? (
-            <Link to="/question-approvals" className="mq-nav-item">
-              Onay Bekleyen Sorular
-            </Link>
-          ) : null}
-        </nav>
-        <Link to="/ask" className="mq-sidebar__ask-btn">
-          {m.askButton}
-        </Link>
-      </aside>
+      <Sidebar />
 
       <section className="mq-main">
         <header className="mq-topbar">
@@ -166,7 +145,11 @@ export function MyQuestionsPage() {
               {filtered.map((q) => (
                 <article key={q.id} className="mq-card">
                   <div className="mq-card__header">
-                    <h2 className="mq-card__title">{q.title}</h2>
+                    <h2 className="mq-card__title">
+                      <Link to={`/question/${q.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                        {q.title}
+                      </Link>
+                    </h2>
                     <div className="mq-card__badges">
                       <span
                         className={`mq-card__status ${
@@ -174,13 +157,6 @@ export function MyQuestionsPage() {
                         }`}
                       >
                         {q.isApproved ? 'Onaylandı' : 'Onay Bekliyor'}
-                      </span>
-                      <span
-                        className={`mq-card__status ${
-                          q.status ? 'mq-card__status--answered' : 'mq-card__status--pending'
-                        }`}
-                      >
-                        {q.status ? m.questionAnswered : m.questionPending}
                       </span>
                     </div>
                   </div>
