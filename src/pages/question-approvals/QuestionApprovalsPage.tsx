@@ -3,6 +3,7 @@ import { useLocale } from '../../shared/locale'
 import { useTheme } from '../../shared/theme'
 import { useAuth } from '../../shared/auth'
 import { useQuestionApprovalsViewModel } from './hooks/useQuestionApprovalsViewModel'
+import { Sidebar } from '../../shared/components/Sidebar'
 import './QuestionApprovalsPage.css'
 
 function formatDate(ts: { toDate?: () => Date } | null | undefined): string {
@@ -19,21 +20,7 @@ export function QuestionApprovalsPage() {
 
   return (
     <main className="qa-dashboard">
-      <aside className="qa-sidebar">
-        <div className="qa-sidebar__brand">Akademik Avlu</div>
-        <nav className="qa-sidebar__menu" aria-label="Ana menü">
-          <Link to="/home" className="qa-nav-item">
-            {p.menuHome}
-          </Link>
-          <Link to="/my-questions" className="qa-nav-item">
-            {p.menuMyQuestions}
-          </Link>
-          <Link to="/ask" className="qa-nav-item">
-            {p.menuAsk}
-          </Link>
-          <span className="qa-nav-item qa-nav-item--active">{p.menuApprovals}</span>
-        </nav>
-      </aside>
+      <Sidebar />
 
       <section className="qa-main">
         <header className="qa-topbar">
