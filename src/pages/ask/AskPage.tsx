@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useLocale } from '../../shared/locale'
 import type { QuestionTargetAudience } from '../../shared/types/firestore'
@@ -8,6 +9,23 @@ export function AskPage() {
   const { messages } = useLocale()
   const a = messages.ask
   const vm = useAskQuestionViewModel(a)
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window !== 'undefined') {
+      return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
+    }
+    return 'light'
+  })
+
+  const toggleTheme = () => {
+    const next = theme === 'dark' ? 'light' : 'dark'
+    setTheme(next)
+    document.documentElement.setAttribute('data-theme', next)
+    if (next === 'dark') {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }
 
   return (
     <main className="ask-dashboard">
@@ -20,7 +38,7 @@ export function AskPage() {
           <span className="ask-nav-item">{a.menuCategories}</span>
           <span className="ask-nav-item">{a.menuScholarships}</span>
           <span className="ask-nav-item">{a.menuRegistration}</span>
-          <span className="ask-nav-item">{a.menuMyQuestions}</span>
+          <Link to="/my-questions" className="ask-nav-item">{a.menuMyQuestions}</Link>
           <span className="ask-nav-item ask-nav-item--active">{a.menuAsk}</span>
         </nav>
       </aside>
@@ -33,6 +51,15 @@ export function AskPage() {
             aria-label="Soru arama"
           />
           <div className="ask-topbar__actions">
+            <button
+              type="button"
+              className="ask-theme-toggle"
+              aria-label="Tema değiştir"
+              onClick={toggleTheme}
+              title={theme === 'dark' ? 'Açık temaya geç' : 'Koyu temaya geç'}
+            >
+              {theme === 'dark' ? '☀️' : '🌙'}
+            </button>
             <button type="button" className="ask-top-icon" aria-label="Bildirimler">
               🔔
             </button>
