@@ -17,6 +17,8 @@ export interface Question {
   categoryId: string
   categoryName: string
   targetAudience: QuestionTargetAudience
+  /** false: Moderasyon bekliyor, true: Yayına uygun */
+  isApproved: boolean
   /** false: Bekliyor, true: Cevaplandı */
   status: boolean
   answerIds: string[]

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useAuth } from '../../shared/auth'
+import { useAuth, useCanAccessQuestionApprovals } from '../../shared/auth'
 import { useLocale } from '../../shared/locale'
 import { useTheme } from '../../shared/theme'
 import { useMyQuestionsViewModel } from './hooks/useMyQuestionsViewModel'
@@ -28,6 +28,7 @@ export function MyQuestionsPage() {
   const m = messages.myQuestions
   const { theme, toggleTheme } = useTheme()
   const { logout } = useAuth()
+  const canOpenApprovals = useCanAccessQuestionApprovals()
   const { questions, status } = useMyQuestionsViewModel()
   const [filter, setFilter] = useState<FilterStatus>('all')
 
@@ -51,6 +52,11 @@ export function MyQuestionsPage() {
           <Link to="/ask" className="mq-nav-item">
             {m.menuAsk}
           </Link>
+          {canOpenApprovals ? (
+            <Link to="/question-approvals" className="mq-nav-item">
+              Onay Bekleyen Sorular
+            </Link>
+          ) : null}
         </nav>
         <Link to="/ask" className="mq-sidebar__ask-btn">
           {m.askButton}
@@ -161,13 +167,22 @@ export function MyQuestionsPage() {
                 <article key={q.id} className="mq-card">
                   <div className="mq-card__header">
                     <h2 className="mq-card__title">{q.title}</h2>
-                    <span
-                      className={`mq-card__status ${
-                        q.status ? 'mq-card__status--answered' : 'mq-card__status--pending'
-                      }`}
-                    >
-                      {q.status ? m.questionAnswered : m.questionPending}
-                    </span>
+                    <div className="mq-card__badges">
+                      <span
+                        className={`mq-card__status ${
+                          q.isApproved ? 'mq-card__status--approved' : 'mq-card__status--approval-pending'
+                        }`}
+                      >
+                        {q.isApproved ? 'Onaylandı' : 'Onay Bekliyor'}
+                      </span>
+                      <span
+                        className={`mq-card__status ${
+                          q.status ? 'mq-card__status--answered' : 'mq-card__status--pending'
+                        }`}
+                      >
+                        {q.status ? m.questionAnswered : m.questionPending}
+                      </span>
+                    </div>
                   </div>
                   <p className="mq-card__excerpt">{q.content}</p>
                   <div className="mq-card__meta">

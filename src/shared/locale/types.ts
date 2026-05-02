@@ -87,6 +87,10 @@ export type AskMessages = {
   menuAsk: string
   titleLabel: string
   titlePlaceholder: string
+  departmentLabel: string
+  departmentPlaceholder: string
+  departmentLoading: string
+  departmentLoadError: string
   categoryLabel: string
   categoryPlaceholder: string
   categoryLoading: string
@@ -114,7 +118,11 @@ export type AskMessages = {
   errorContentTooShort: string
   errorUnauthenticated: string
   errorProfileNotFound: string
+  errorDepartmentRequired: string
+  errorDepartmentNotFound: string
   errorCategoryNotFound: string
+  errorApprovalForbidden: string
+  errorApprovalUpdateFailed: string
   errorCreateFailed: string
 }
 
@@ -140,10 +148,28 @@ export type MyQuestionsMessages = {
   questionAnswered: string
 }
 
+export type QuestionApprovalsMessages = {
+  pageTitle: string
+  pageSubtitle: string
+  menuHome: string
+  menuMyQuestions: string
+  menuAsk: string
+  menuApprovals: string
+  emptyTitle: string
+  emptySubtitle: string
+  approveButton: string
+  approvingButton: string
+  successApproved: string
+  accessDenied: string
+  goHome: string
+  genericError: string
+}
+
 export type AppMessages = {
   register: RegisterMessages
   login: LoginMessages
   home: HomeMessages
   ask: AskMessages
   myQuestions: MyQuestionsMessages
+  questionApprovals: QuestionApprovalsMessages
 }

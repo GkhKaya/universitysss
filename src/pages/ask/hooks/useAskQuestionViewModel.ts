@@ -7,7 +7,11 @@ import {
 import { firestoreManager } from '../../../shared/lib/firebase'
 import type { AskMessages } from '../../../shared/locale/types'
 import { FIRESTORE_COLLECTIONS } from '../../../shared/types/firestore'
-import type { QuestionCategory, QuestionTargetAudience } from '../../../shared/types/firestore'
+import type {
+  Department,
+  QuestionCategory,
+  QuestionTargetAudience,
+} from '../../../shared/types/firestore'
 import { questionRepository } from '../data/question.repository.instance'
 
 const TITLE_MAX_LENGTH = 120
@@ -22,12 +26,17 @@ export type AskFormStatus =
 export function useAskQuestionViewModel(messages: AskMessages) {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
+  const [departmentId, setDepartmentId] = useState('')
   const [categoryId, setCategoryId] = useState('')
   const [isAnonymous, setIsAnonymous] = useState(false)
   const [targetAudience, setTargetAudience] = useState<QuestionTargetAudience>('everyone')
   const [status, setStatus] = useState<AskFormStatus>({ kind: 'idle' })
   const [categories, setCategories] = useState<Array<{ id: string; name: string }>>([])
+  const [departments, setDepartments] = useState<Array<{ id: string; name: string }>>([])
   const [categoriesStatus, setCategoriesStatus] = useState<'loading' | 'error' | 'ready'>(
+    'loading',
+  )
+  const [departmentsStatus, setDepartmentsStatus] = useState<'loading' | 'error' | 'ready'>(
     'loading',
   )
 
@@ -57,6 +66,30 @@ export function useAskQuestionViewModel(messages: AskMessages) {
     }
   }, [])
 
+  useEffect(() => {
+    let cancelled = false
+    void firestoreManager
+      .list<Department>(FIRESTORE_COLLECTIONS.departments)
+      .then((rows) => {
+        if (cancelled) return
+        setDepartments(
+          rows.map((row) => ({
+            id: row.id,
+            name: row.data.name,
+          })),
+        )
+        setDepartmentsStatus('ready')
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setDepartmentsStatus('error')
+        }
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   const resetFeedback = useCallback(() => {
     if (status.kind !== 'idle') {
       setStatus({ kind: 'idle' })
@@ -72,6 +105,13 @@ export function useAskQuestionViewModel(messages: AskMessages) {
       setStatus({
         kind: 'error',
         message: resolveQuestionErrorMessage('QUESTION_REQUIRED_FIELDS', messages),
+      })
+      return
+    }
+    if (!departmentId) {
+      setStatus({
+        kind: 'error',
+        message: resolveQuestionErrorMessage('QUESTION_DEPARTMENT_REQUIRED', messages),
       })
       return
     }
@@ -102,12 +142,14 @@ export function useAskQuestionViewModel(messages: AskMessages) {
       await questionRepository.createQuestion({
         title: normalizedTitle,
         content: normalizedContent,
+        departmentId,
         categoryId,
         isAnonymous,
         targetAudience,
       })
       setTitle('')
       setContent('')
+      setDepartmentId('')
       setCategoryId('')
       setIsAnonymous(false)
       setTargetAudience('everyone')
@@ -125,13 +167,24 @@ export function useAskQuestionViewModel(messages: AskMessages) {
         message: resolveQuestionErrorMessage('QUESTION_CREATE_FAILED', messages),
       })
     }
-  }, [categoryId, content, isAnonymous, messages, resetFeedback, targetAudience, title])
+  }, [
+    categoryId,
+    content,
+    departmentId,
+    isAnonymous,
+    messages,
+    resetFeedback,
+    targetAudience,
+    title,
+  ])
 
   return {
     title,
     setTitle,
     content,
     setContent,
+    departmentId,
+    setDepartmentId,
     categoryId,
     setCategoryId,
     isAnonymous,
@@ -139,7 +192,9 @@ export function useAskQuestionViewModel(messages: AskMessages) {
     targetAudience,
     setTargetAudience,
     categories,
+    departments,
     categoriesStatus,
+    departmentsStatus,
     status,
     submit,
     resetFeedback,

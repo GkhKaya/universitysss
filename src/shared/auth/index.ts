@@ -1,4 +1,6 @@
 export { AuthContext } from './AuthContext'
 export type { AuthContextValue } from './AuthContext'
 export { AuthProvider } from './AuthProvider'
+export { canAccessQuestionApprovals } from './role-permissions'
+export { useCanAccessQuestionApprovals } from './useCanAccessQuestionApprovals'
 export { useAuth } from './useAuth'
