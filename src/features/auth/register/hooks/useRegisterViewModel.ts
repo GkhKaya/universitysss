@@ -115,7 +115,13 @@ export function useRegisterViewModel(messages: RegisterMessages) {
       })
       return
     }
-    if (!selectedDepartment) {
+    const normalizedSearch = normalizeSearch(departmentSearch)
+    const inferredDepartment =
+      selectedDepartment ??
+      departments.find((dept) => normalizeSearch(dept.name) === normalizedSearch) ??
+      null
+
+    if (!inferredDepartment) {
       setStatus({
         kind: 'error',
         message: resolveRegisterErrorMessage('REGISTER_DEPARTMENT_REQUIRED', messages),
@@ -151,12 +157,13 @@ export function useRegisterViewModel(messages: RegisterMessages) {
         email: mail,
         password: pass,
         role,
-        department: selectedDepartment,
+        department: inferredDepartment,
         roleLabels: {
           student: messages.roleStudent,
           teacher: messages.roleTeacher,
         },
       })
+      setSelectedDepartment(inferredDepartment)
       setStatus({ kind: 'success', message: messages.successSignup })
     } catch (err) {
       if (isAppError(err) && isRegisterAppErrorCode(err.code)) {
@@ -173,6 +180,8 @@ export function useRegisterViewModel(messages: RegisterMessages) {
     }
   }, [
     displayName,
+    departmentSearch,
+    departments,
     email,
     messages,
     password,

@@ -24,3 +24,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Toplu seed listeleri ve admin anahtarları (repoya girmesin)
+scripts/departments.seed.json
+*-firebase-adminsdk-*.json

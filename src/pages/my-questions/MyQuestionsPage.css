@@ -263,6 +263,14 @@
   margin-bottom: 0.5rem;
 }
 
+.mq-card__badges {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .mq-card__title {
   margin: 0;
   font-size: 1rem;
@@ -290,6 +298,18 @@
   background: color-mix(in srgb, var(--color-success) 15%, transparent);
   color: var(--color-success-text);
   border: 1px solid color-mix(in srgb, var(--color-success) 30%, transparent);
+}
+
+.mq-card__status--approval-pending {
+  background: color-mix(in srgb, var(--color-warning) 12%, transparent);
+  color: var(--color-warning-text);
+  border: 1px solid color-mix(in srgb, var(--color-warning) 30%, transparent);
+}
+
+.mq-card__status--approved {
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  color: var(--color-accent);
+  border: 1px solid color-mix(in srgb, var(--color-accent) 30%, transparent);
 }
 
 [data-theme='dark'] .mq-card__status--pending,

@@ -7,7 +7,11 @@ export const QUESTION_MESSAGE_KEY = {
   QUESTION_CONTENT_TOO_SHORT: 'errorContentTooShort',
   QUESTION_UNAUTHENTICATED: 'errorUnauthenticated',
   QUESTION_PROFILE_NOT_FOUND: 'errorProfileNotFound',
+  QUESTION_DEPARTMENT_REQUIRED: 'errorDepartmentRequired',
+  QUESTION_DEPARTMENT_NOT_FOUND: 'errorDepartmentNotFound',
   QUESTION_CATEGORY_NOT_FOUND: 'errorCategoryNotFound',
+  QUESTION_APPROVAL_FORBIDDEN: 'errorApprovalForbidden',
+  QUESTION_APPROVAL_UPDATE_FAILED: 'errorApprovalUpdateFailed',
   QUESTION_CREATE_FAILED: 'errorCreateFailed',
 } as const satisfies Record<string, keyof AskMessages>
 

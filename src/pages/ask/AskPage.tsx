@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { useAuth } from '../../shared/auth'
+import { useAuth, useCanAccessQuestionApprovals } from '../../shared/auth'
 import { useLocale } from '../../shared/locale'
 import { useTheme } from '../../shared/theme'
 import type { QuestionTargetAudience } from '../../shared/types/firestore'
@@ -12,6 +12,7 @@ export function AskPage() {
   const vm = useAskQuestionViewModel(a)
   const { theme, toggleTheme } = useTheme()
   const { logout } = useAuth()
+  const canOpenApprovals = useCanAccessQuestionApprovals()
 
   return (
     <main className="ask-dashboard">
@@ -26,6 +27,11 @@ export function AskPage() {
           <span className="ask-nav-item">{a.menuRegistration}</span>
           <Link to="/my-questions" className="ask-nav-item">{a.menuMyQuestions}</Link>
           <span className="ask-nav-item ask-nav-item--active">{a.menuAsk}</span>
+          {canOpenApprovals ? (
+            <Link to="/question-approvals" className="ask-nav-item">
+              {messages.questionApprovals.menuApprovals}
+            </Link>
+          ) : null}
         </nav>
       </aside>
 
@@ -118,6 +124,37 @@ export function AskPage() {
                     />
                     <span className="ask-field__counter">{vm.title.length}/120</span>
                   </div>
+                </div>
+
+                <div className="ask-field">
+                  <label className="ask-field__label" htmlFor="ask-department">
+                    {a.departmentLabel} <span aria-hidden="true">*</span>
+                  </label>
+                  <select
+                    id="ask-department"
+                    className="ask-field__select"
+                    value={vm.departmentId}
+                    onChange={(e) => {
+                      vm.setDepartmentId(e.target.value)
+                      if (vm.status.kind === 'error') {
+                        vm.resetFeedback()
+                      }
+                    }}
+                    disabled={vm.status.kind === 'submitting' || vm.departmentsStatus !== 'ready'}
+                  >
+                    <option value="" disabled>
+                      {vm.departmentsStatus === 'loading'
+                        ? a.departmentLoading
+                        : vm.departmentsStatus === 'error'
+                          ? a.departmentLoadError
+                          : a.departmentPlaceholder}
+                    </option>
+                    {vm.departments.map((department) => (
+                      <option key={department.id} value={department.id}>
+                        {department.name}
+                      </option>
+                    ))}
+                  </select>
                 </div>
 
                 <div className="ask-field">

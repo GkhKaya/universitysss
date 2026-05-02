@@ -1,48 +1,25 @@
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useAuth } from '../../shared/auth'
+import { useAuth, useCanAccessQuestionApprovals } from '../../shared/auth'
 import { useTheme } from '../../shared/theme'
+import { questionRepository } from '../ask/data/question.repository.instance'
+import type { ApprovedQuestion } from '../ask/data/question.repository'
 import './HomePage.css'
 
-interface FeedItem {
-  id: string
-  title: string
-  excerpt: string
-  tag: string
-  category: string
-  timeAgo: string
-  answers: number
-  likes: number
-  author: string
-  verified?: boolean
+function formatDate(ts: { toDate?: () => Date } | null | undefined): string {
+  if (!ts || typeof ts.toDate !== 'function') return ''
+  const date = ts.toDate()
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffMin = Math.floor(diffMs / 60000)
+  const diffHour = Math.floor(diffMin / 60)
+  const diffDay = Math.floor(diffHour / 24)
+  if (diffMin < 2) return 'Az önce'
+  if (diffMin < 60) return `${diffMin} dakika önce`
+  if (diffHour < 24) return `${diffHour} saat önce`
+  if (diffDay < 7) return `${diffDay} gün önce`
+  return date.toLocaleDateString('tr-TR')
 }
-
-const FEED_ITEMS: FeedItem[] = [
-  {
-    id: 'post-1',
-    title: 'Staj başvuruları ne zaman başlıyor?',
-    excerpt:
-      '2024-2025 Eğitim-Öğretim yılı yaz dönemi zorunlu staj başvuruları 15 Mayıs’ta başlıyor, 15 Haziran’da sona erecek. Başvurular Öğrenci İşleri Bilgi Sistemi üzerinden online olarak yapılmalıdır.',
-    tag: 'Resmi Duyuru',
-    category: 'STAJ',
-    timeAgo: '2 saat önce',
-    answers: 8,
-    likes: 42,
-    author: 'Öğrenci İşleri',
-    verified: true,
-  },
-  {
-    id: 'post-2',
-    title: 'Yemekhane menüsüne nereden ulaşabilirim? Haftalık liste yayınlanıyor mu?',
-    excerpt:
-      'Sağlık Kültür ve Spor Daire Başkanlığı sayfasında aylık menüler yayınlanıyor ancak bazen günlük değişiklikler olabiliyor. Üniversitenin mobil uygulamasındaki yemek kartını da takip etmenizi öneririm.',
-    tag: 'Kampüs Bilgisi',
-    category: 'YEMEKHANE',
-    timeAgo: '5 saat önce',
-    answers: 3,
-    likes: 15,
-    author: 'Ahmet K.',
-  },
-]
 
 const POPULAR_ITEMS = [
   'Vize sınav takvimi ne zaman açıklanacak?',
@@ -58,6 +35,44 @@ const TOP_USERS = [
 export function HomePage() {
   const { theme, toggleTheme } = useTheme()
   const { logout } = useAuth()
+  const canOpenApprovals = useCanAccessQuestionApprovals()
+  const [search, setSearch] = useState('')
+  const [feedStatus, setFeedStatus] = useState<'loading' | 'ready' | 'error'>('loading')
+  const [approvedQuestions, setApprovedQuestions] = useState<ApprovedQuestion[]>([])
+
+  useEffect(() => {
+    let cancelled = false
+    const load = async () => {
+      setFeedStatus('loading')
+      try {
+        const rows = await questionRepository.getApprovedQuestions()
+        if (!cancelled) {
+          setApprovedQuestions(rows)
+          setFeedStatus('ready')
+        }
+      } catch {
+        if (!cancelled) {
+          setFeedStatus('error')
+        }
+      }
+    }
+    void load()
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const filteredQuestions = useMemo(() => {
+    const q = search.trim().toLocaleLowerCase('tr-TR')
+    if (!q) return approvedQuestions
+    return approvedQuestions.filter((item) => {
+      return (
+        item.title.toLocaleLowerCase('tr-TR').includes(q) ||
+        item.content.toLocaleLowerCase('tr-TR').includes(q) ||
+        item.categoryName.toLocaleLowerCase('tr-TR').includes(q)
+      )
+    })
+  }, [approvedQuestions, search])
 
   return (
     <main className="home-dashboard">
@@ -80,6 +95,11 @@ export function HomePage() {
           <Link to="/my-questions" className="home-nav-item" style={{ display: 'block' }}>
             Sorularım
           </Link>
+          {canOpenApprovals ? (
+            <Link to="/question-approvals" className="home-nav-item" style={{ display: 'block' }}>
+              Onay Bekleyen Sorular
+            </Link>
+          ) : null}
         </nav>
 
         <section className="home-filter-block">
@@ -102,6 +122,10 @@ export function HomePage() {
             className="home-search"
             placeholder="Sorularda ara veya yeni bir soru sor..."
             aria-label="Soru arama"
+            value={search}
+            onChange={(event) => {
+              setSearch(event.target.value)
+            }}
           />
           <div className="home-topbar__actions">
             <button
@@ -140,35 +164,41 @@ export function HomePage() {
               </button>
             </div>
 
-            <div className="home-feed__list">
-              {FEED_ITEMS.map((item) => (
-                <article key={item.id} className="home-post-card">
-                  <div className="home-post-card__meta">
-                    <span className="home-tag">
-                      {item.verified ? 'Onaylı • ' : ''}
-                      {item.tag}
-                    </span>
-                    <span>{item.timeAgo}</span>
-                  </div>
+            {feedStatus === 'loading' ? <p className="home-feed-state">Sorular yükleniyor...</p> : null}
+            {feedStatus === 'error' ? (
+              <p className="home-feed-state">Sorular alınamadı. Lütfen sayfayı yenileyin.</p>
+            ) : null}
+            {feedStatus === 'ready' && filteredQuestions.length === 0 ? (
+              <p className="home-feed-state">Onaylı soru bulunamadı.</p>
+            ) : null}
 
-                  <h2>{item.title}</h2>
-                  <p>{item.excerpt}</p>
-
-                  <div className="home-post-card__chips">
-                    <span>{item.category}</span>
-                    <span>Kariyer Merkezi</span>
-                  </div>
-
-                  <div className="home-post-card__footer">
-                    <div className="home-post-card__stats">
-                      <span>👍 {item.likes}</span>
-                      <span>💬 {item.answers} Yanıt</span>
+            {feedStatus === 'ready' && filteredQuestions.length > 0 ? (
+              <div className="home-feed__list">
+                {filteredQuestions.map((item) => (
+                  <article key={item.id} className="home-post-card">
+                    <div className="home-post-card__meta">
+                      <span className="home-tag">Onaylı</span>
+                      <span>{formatDate(item.createdAt)}</span>
                     </div>
-                    <span className="home-post-card__author">{item.author}</span>
-                  </div>
-                </article>
-              ))}
-            </div>
+
+                    <h2>{item.title}</h2>
+                    <p>{item.content}</p>
+
+                    <div className="home-post-card__chips">
+                      <span>{item.categoryName}</span>
+                    </div>
+
+                    <div className="home-post-card__footer">
+                      <div className="home-post-card__stats">
+                        <span>👍 {item.voteCount}</span>
+                        <span>💬 {item.answerIds.length} Yanıt</span>
+                      </div>
+                      <span className="home-post-card__author">{item.authorName}</span>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            ) : null}
           </section>
 
           <aside className="home-widgets">
