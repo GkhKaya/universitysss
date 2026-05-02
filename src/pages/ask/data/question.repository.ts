@@ -46,10 +46,9 @@ export class QuestionRepository {
     const results = await this.db.list<Question>(
       FIRESTORE_COLLECTIONS.questions,
       where('authorId', '==', user.uid),
-      orderBy('createdAt', 'desc'),
     )
 
-    return results.map(({ id, data }) => ({
+    const questions = results.map(({ id, data }) => ({
       id,
       title: data.title,
       content: data.content,
@@ -59,6 +58,13 @@ export class QuestionRepository {
       voteCount: data.voteCount,
       createdAt: data.createdAt,
     }))
+
+    // Firebase Composite Index hatasını önlemek için sıralamayı client tarafında yapıyoruz.
+    return questions.sort((a, b) => {
+      const timeA = a.createdAt?.toMillis?.() || 0
+      const timeB = b.createdAt?.toMillis?.() || 0
+      return timeB - timeA
+    })
   }
 
   async createQuestion(input: CreateQuestionInput): Promise<string> {
