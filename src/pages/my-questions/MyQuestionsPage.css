@@ -391,7 +391,44 @@
   color: #fff;
 }
 
-/* ── Responsive ────────────────────────────────────────── */
+/* ── Loading state ─────────────────────────────────────── */
+.mq-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem 1.5rem;
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.mq-loading__spinner {
+  width: 2rem;
+  height: 2rem;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: mq-spin 0.8s linear infinite;
+}
+
+@keyframes mq-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Error state ───────────────────────────────────────── */
+.mq-error {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: color-mix(in srgb, var(--color-error, #b91c1c) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--color-error, #b91c1c) 30%, transparent);
+  border-radius: 1rem;
+  padding: 1rem 1.25rem;
+  color: var(--color-error, #b91c1c);
+  font-size: 0.9rem;
+}
+
+
 @media (max-width: 1080px) {
   .mq-dashboard {
     flex-direction: column;

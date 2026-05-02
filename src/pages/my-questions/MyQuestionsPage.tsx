@@ -1,81 +1,38 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useLocale } from '../../shared/locale'
+import { useTheme } from '../../shared/theme'
+import { useMyQuestionsViewModel } from './hooks/useMyQuestionsViewModel'
 import './MyQuestionsPage.css'
 
-interface MockQuestion {
-  id: string
-  title: string
-  excerpt: string
-  category: string
-  status: 'pending' | 'answered'
-  answers: number
-  likes: number
-  timeAgo: string
-}
-
-const MOCK_QUESTIONS: MockQuestion[] = [
-  {
-    id: 'q-1',
-    title: 'Staj başvurusu için gerekli belgeler neler?',
-    excerpt:
-      'Yaz stajı için hangi belgeleri hazırlamam gerektiğini öğrenmek istiyorum. SGK kaydı ve sigorta konusunda net bilgi bulamadım.',
-    category: 'STAJ',
-    status: 'answered',
-    answers: 3,
-    likes: 7,
-    timeAgo: '2 gün önce',
-  },
-  {
-    id: 'q-2',
-    title: 'Erasmus başvurusunda dil sınavı zorunlu mu?',
-    excerpt:
-      'Erasmus programına başvurmak istiyorum fakat hangi dil sınavlarının kabul edildiğini ve minimum puan gereksinimlerini bilmiyorum.',
-    category: 'ERASMUS',
-    status: 'pending',
-    answers: 0,
-    likes: 2,
-    timeAgo: '5 saat önce',
-  },
-  {
-    id: 'q-3',
-    title: 'Çift anadal başvurusu ne zaman açılır?',
-    excerpt:
-      'Bu dönem çift anadal başvurusu yapabilmek için son tarihleri ve gerekli GPA şartını öğrenmek istiyorum.',
-    category: 'ÇİFT ANADAL',
-    status: 'pending',
-    answers: 0,
-    likes: 5,
-    timeAgo: '1 gün önce',
-  },
-]
-
 type FilterStatus = 'all' | 'pending' | 'answered'
+
+function formatDate(ts: { toDate?: () => Date } | null | undefined): string {
+  if (!ts || typeof ts.toDate !== 'function') return ''
+  const date = ts.toDate()
+  const now = new Date()
+  const diffMs = now.getTime() - date.getTime()
+  const diffMin = Math.floor(diffMs / 60000)
+  const diffHour = Math.floor(diffMin / 60)
+  const diffDay = Math.floor(diffHour / 24)
+  if (diffMin < 2) return 'Az önce'
+  if (diffMin < 60) return `${diffMin} dakika önce`
+  if (diffHour < 24) return `${diffHour} saat önce`
+  if (diffDay < 7) return `${diffDay} gün önce`
+  return date.toLocaleDateString('tr-TR')
+}
 
 export function MyQuestionsPage() {
   const { messages } = useLocale()
   const m = messages.myQuestions
+  const { theme, toggleTheme } = useTheme()
+  const { questions, status } = useMyQuestionsViewModel()
   const [filter, setFilter] = useState<FilterStatus>('all')
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    if (typeof window !== 'undefined') {
-      return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
-    }
-    return 'light'
-  })
-
-  const toggleTheme = () => {
-    const next = theme === 'dark' ? 'light' : 'dark'
-    setTheme(next)
-    document.documentElement.setAttribute('data-theme', next)
-    if (next === 'dark') {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  }
 
   const filtered =
-    filter === 'all' ? MOCK_QUESTIONS : MOCK_QUESTIONS.filter((q) => q.status === filter)
+    filter === 'all'
+      ? questions
+      : questions.filter((q) => (filter === 'answered' ? q.status : !q.status))
 
   return (
     <main className="mq-dashboard">
@@ -132,6 +89,7 @@ export function MyQuestionsPage() {
               onClick={() => { setFilter('all') }}
             >
               {m.statusAll}
+              {status === 'ready' && ` (${questions.length})`}
             </button>
             <button
               type="button"
@@ -139,6 +97,7 @@ export function MyQuestionsPage() {
               onClick={() => { setFilter('pending') }}
             >
               {m.statusPending}
+              {status === 'ready' && ` (${questions.filter((q) => !q.status).length})`}
             </button>
             <button
               type="button"
@@ -146,10 +105,32 @@ export function MyQuestionsPage() {
               onClick={() => { setFilter('answered') }}
             >
               {m.statusAnswered}
+              {status === 'ready' && ` (${questions.filter((q) => q.status).length})`}
             </button>
           </div>
 
-          {filtered.length === 0 ? (
+          {/* Yükleniyor */}
+          {status === 'loading' && (
+            <div className="mq-loading">
+              <span className="mq-loading__spinner" aria-hidden="true" />
+              <p>Sorular yükleniyor…</p>
+            </div>
+          )}
+
+          {/* Hata */}
+          {(status === 'error' || status === 'unauthenticated') && (
+            <div className="mq-error">
+              <span aria-hidden="true">⚠️</span>
+              <p>
+                {status === 'unauthenticated'
+                  ? 'Soruları görmek için giriş yapmanız gerekiyor.'
+                  : 'Sorular yüklenirken hata oluştu. Sayfayı yenileyin.'}
+              </p>
+            </div>
+          )}
+
+          {/* Boş durum */}
+          {status === 'ready' && filtered.length === 0 && (
             <div className="mq-empty">
               <span className="mq-empty__icon" aria-hidden="true">
                 🗂️
@@ -160,7 +141,10 @@ export function MyQuestionsPage() {
                 {m.askButton}
               </Link>
             </div>
-          ) : (
+          )}
+
+          {/* Soru kartları */}
+          {status === 'ready' && filtered.length > 0 && (
             <div className="mq-list">
               {filtered.map((q) => (
                 <article key={q.id} className="mq-card">
@@ -168,24 +152,22 @@ export function MyQuestionsPage() {
                     <h2 className="mq-card__title">{q.title}</h2>
                     <span
                       className={`mq-card__status ${
-                        q.status === 'answered'
-                          ? 'mq-card__status--answered'
-                          : 'mq-card__status--pending'
+                        q.status ? 'mq-card__status--answered' : 'mq-card__status--pending'
                       }`}
                     >
-                      {q.status === 'answered' ? m.questionAnswered : m.questionPending}
+                      {q.status ? m.questionAnswered : m.questionPending}
                     </span>
                   </div>
-                  <p className="mq-card__excerpt">{q.excerpt}</p>
+                  <p className="mq-card__excerpt">{q.content}</p>
                   <div className="mq-card__meta">
-                    <span className="mq-card__chip">{q.category}</span>
+                    <span className="mq-card__chip">{q.categoryName}</span>
                     <span className="mq-card__stat">
-                      💬 {q.answers} {m.questionAnswers}
+                      💬 {q.answerIds.length} {m.questionAnswers}
                     </span>
                     <span className="mq-card__stat">
-                      👍 {q.likes} {m.questionLikes}
+                      👍 {q.voteCount} {m.questionLikes}
                     </span>
-                    <span className="mq-card__time">{q.timeAgo}</span>
+                    <span className="mq-card__time">{formatDate(q.createdAt)}</span>
                   </div>
                 </article>
               ))}

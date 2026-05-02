@@ -1,6 +1,6 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useLocale } from '../../shared/locale'
+import { useTheme } from '../../shared/theme'
 import type { QuestionTargetAudience } from '../../shared/types/firestore'
 import './AskPage.css'
 import { useAskQuestionViewModel } from './hooks/useAskQuestionViewModel'
@@ -9,23 +9,7 @@ export function AskPage() {
   const { messages } = useLocale()
   const a = messages.ask
   const vm = useAskQuestionViewModel(a)
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    if (typeof window !== 'undefined') {
-      return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
-    }
-    return 'light'
-  })
-
-  const toggleTheme = () => {
-    const next = theme === 'dark' ? 'light' : 'dark'
-    setTheme(next)
-    document.documentElement.setAttribute('data-theme', next)
-    if (next === 'dark') {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  }
+  const { theme, toggleTheme } = useTheme()
 
   return (
     <main className="ask-dashboard">

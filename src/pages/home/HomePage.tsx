@@ -1,5 +1,5 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import { useTheme } from '../../shared/theme'
 import './HomePage.css'
 
 interface FeedItem {
@@ -55,23 +55,7 @@ const TOP_USERS = [
 ]
 
 export function HomePage() {
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    if (typeof window !== 'undefined') {
-      return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
-    }
-    return 'light'
-  })
-
-  const toggleTheme = () => {
-    const next = theme === 'dark' ? 'light' : 'dark'
-    setTheme(next)
-    document.documentElement.setAttribute('data-theme', next)
-    if (next === 'dark') {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  }
+  const { theme, toggleTheme } = useTheme()
 
   return (
     <main className="home-dashboard">
