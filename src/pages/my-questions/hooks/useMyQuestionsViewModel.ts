@@ -21,7 +21,8 @@ export function useMyQuestionsViewModel() {
         }
       } catch (err: unknown) {
         if (cancelled) return
-        const message = err instanceof Error ? err.message : ''
+        console.error('Fetch My Questions Error:', err)
+        const message = err instanceof Error ? err.message : String(err)
         if (message.includes('UNAUTHENTICATED') || message.includes('unauthenticated')) {
           setStatus('unauthenticated')
         } else {

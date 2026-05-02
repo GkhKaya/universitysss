@@ -281,25 +281,25 @@
 }
 
 .mq-card__status--pending {
-  background: color-mix(in srgb, #f59e0b 15%, transparent);
-  color: #b45309;
-  border: 1px solid color-mix(in srgb, #f59e0b 30%, transparent);
+  background: color-mix(in srgb, var(--color-warning) 15%, transparent);
+  color: var(--color-warning-text);
+  border: 1px solid color-mix(in srgb, var(--color-warning) 30%, transparent);
 }
 
 .mq-card__status--answered {
-  background: color-mix(in srgb, #10b981 15%, transparent);
-  color: #047857;
-  border: 1px solid color-mix(in srgb, #10b981 30%, transparent);
+  background: color-mix(in srgb, var(--color-success) 15%, transparent);
+  color: var(--color-success-text);
+  border: 1px solid color-mix(in srgb, var(--color-success) 30%, transparent);
 }
 
 [data-theme='dark'] .mq-card__status--pending,
 .dark .mq-card__status--pending {
-  color: #fbbf24;
+  color: var(--color-warning);
 }
 
 [data-theme='dark'] .mq-card__status--answered,
 .dark .mq-card__status--answered {
-  color: #34d399;
+  color: var(--color-success);
 }
 
 .mq-card__excerpt {
