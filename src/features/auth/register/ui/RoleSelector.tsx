@@ -1,6 +1,6 @@
-import type { RegisterMessages } from '../../../shared/locale/types'
+import type { RegisterMessages } from '../../../../shared/locale/types'
 import type { RegistrationRole } from '../model/types'
-import { IconCheckCircle, IconMenuBook, IconSchool } from './RegisterIcons'
+import { IconCheckCircle, IconMenuBook, IconSchool } from '../../ui/AuthIcons'
 import './RoleSelector.css'
 
 type RoleSelectorProps = {

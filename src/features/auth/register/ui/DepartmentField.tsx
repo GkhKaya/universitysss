@@ -1,7 +1,7 @@
 import { useCallback, useId, useRef, useState } from 'react'
-import type { RegisterMessages } from '../../../shared/locale/types'
+import type { RegisterMessages } from '../../../../shared/locale/types'
 import type { DepartmentOption } from '../model/types'
-import { IconSearch } from './RegisterIcons'
+import { IconSearch } from '../../ui/AuthIcons'
 import './DepartmentField.css'
 
 export type { DepartmentOption } from '../model/types'
