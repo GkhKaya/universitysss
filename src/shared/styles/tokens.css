@@ -161,7 +161,7 @@
 }
 
 /* JS toggle support — data-theme attribute */
-[data-theme='dark'] {
+:root[data-theme='dark'] {
   --color-bg: #0f1419;
   --color-bg-elevated: #161b22;
   --color-bg-muted: #1c2128;

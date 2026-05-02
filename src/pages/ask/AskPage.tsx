@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useAuth } from '../../shared/auth'
 import { useLocale } from '../../shared/locale'
 import { useTheme } from '../../shared/theme'
 import type { QuestionTargetAudience } from '../../shared/types/firestore'
@@ -10,6 +11,7 @@ export function AskPage() {
   const a = messages.ask
   const vm = useAskQuestionViewModel(a)
   const { theme, toggleTheme } = useTheme()
+  const { logout } = useAuth()
 
   return (
     <main className="ask-dashboard">
@@ -47,9 +49,18 @@ export function AskPage() {
             <button type="button" className="ask-top-icon" aria-label="Bildirimler">
               🔔
             </button>
-            <span className="ask-avatar" aria-hidden="true">
+            <span className="ask-avatar" aria-hidden="true" title="Profil">
               G
             </span>
+            <button
+              type="button"
+              className="ask-top-icon"
+              aria-label="Çıkış yap"
+              onClick={logout}
+              title="Çıkış yap"
+            >
+              🚪
+            </button>
           </div>
         </header>
 
