@@ -49,6 +49,8 @@
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
+  text-decoration: none;
+  display: block;
 }
 
 .home-nav-item:hover {
@@ -381,6 +383,43 @@
   color: var(--color-text);
   font-size: 0.86rem;
   line-height: 1.35;
+}
+
+.home-popular-item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.home-popular-link {
+  color: var(--color-text);
+  font-size: 0.86rem;
+  line-height: 1.35;
+  text-decoration: none;
+  flex: 1;
+  transition: color 0.15s ease;
+}
+
+.home-popular-link:hover {
+  color: var(--color-accent);
+}
+
+.home-popular-badge {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-text-subtle);
+  background: var(--color-bg-muted);
+  border-radius: 999px;
+  padding: 0.1rem 0.45rem;
+  white-space: nowrap;
+}
+
+.home-popular-placeholder {
+  color: var(--color-text-subtle);
+  font-size: 0.85rem;
+  font-style: italic;
 }
 
 .home-user-row {

@@ -22,11 +22,7 @@ function formatDate(ts: { toDate?: () => Date } | null | undefined): string {
   return date.toLocaleDateString('tr-TR')
 }
 
-const POPULAR_ITEMS = [
-  'Vize sınav takvimi ne zaman açıklanacak?',
-  'Kütüphane çalışma saatleri uzatıldı mı?',
-  'Erasmus + dil sınavı baraj puanı kaç?',
-]
+
 
 const TOP_USERS = [
   { name: 'Zeynep Yılmaz', major: 'Bilgisayar Müh.', score: 450 },
@@ -73,6 +69,14 @@ export function HomePage() {
       return title.includes(q) || content.includes(q) || category.includes(q)
     })
   }, [approvedQuestions, search])
+
+  const popularQuestions = useMemo(
+    () =>
+      [...approvedQuestions]
+        .sort((a, b) => b.answerIds.length - a.answerIds.length)
+        .slice(0, 3),
+    [approvedQuestions],
+  )
 
   return (
     <main className="home-dashboard">
@@ -193,9 +197,21 @@ export function HomePage() {
             <section className="home-widget-card">
               <h2>Popüler Sorular</h2>
               <ul>
-                {POPULAR_ITEMS.map((item) => (
-                  <li key={item}>{item}</li>
-                ))}
+                {feedStatus === 'loading' && (
+                  <li className="home-popular-placeholder">Yükleniyor...</li>
+                )}
+                {feedStatus === 'ready' && popularQuestions.length === 0 && (
+                  <li className="home-popular-placeholder">Henüz soru yok.</li>
+                )}
+                {feedStatus === 'ready' &&
+                  popularQuestions.map((item) => (
+                    <li key={item.id} className="home-popular-item">
+                      <Link to={`/question/${item.id}`} className="home-popular-link">
+                        {item.title}
+                      </Link>
+                      <span className="home-popular-badge">💬 {item.answerIds.length}</span>
+                    </li>
+                  ))}
               </ul>
             </section>
 

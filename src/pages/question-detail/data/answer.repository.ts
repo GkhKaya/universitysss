@@ -1,4 +1,4 @@
-import { serverTimestamp, where } from 'firebase/firestore'
+import { serverTimestamp, where, arrayUnion } from 'firebase/firestore'
 import type { DocumentData } from 'firebase/firestore'
 import { AppError } from '../../../shared/errors'
 import type { IAuthManager } from '../../../shared/lib/firebase'
@@ -69,8 +69,16 @@ export class AnswerRepository {
 
     try {
       const answerId = await this.db.add(FIRESTORE_COLLECTIONS.answers, payload)
+      
+      // Soru dökümanını da güncelle ki answerIds dizisi senkronize kalsın
+      await this.db.update(FIRESTORE_COLLECTIONS.questions, input.questionId, {
+        answerIds: arrayUnion(answerId) as any,
+        updatedAt: serverTimestamp(),
+      })
+      
       return answerId
-    } catch {
+    } catch (error) {
+      console.error(error)
       throw new AppError('ANSWER_CREATE_FAILED')
     }
   }
