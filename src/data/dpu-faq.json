@@ -2,31 +2,73 @@
   {
     "id": 1,
     "question": "Kütahya Dumlupınar Üniversitesi Ana Kampüsü neresidir?",
-    "answer": "Üniversitemizin ana kampüsü Evliya Çelebi Yerleşkesi'dir. Kütahya - Tavşanlı yolu üzerinde bulunmaktadır ve rektörlük ile pek çok fakülte bu yerleşkede yer almaktadır."
+    "answer": "Üniversitemizin ana kampüsü Evliya Çelebi Yerleşkesi'dir. Kütahya - Tavşanlı yolu üzerinde bulunmaktadır ve rektörlük ile pek çok fakülte bu yerleşkede yer almaktadır.",
+    "category": "Kampüs Hayatı"
   },
   {
     "id": 2,
     "question": "Merkez Kütüphane çalışma saatleri nelerdir?",
-    "answer": "Şehit Astsubay Ömer Halisdemir Kütüphanesi eğitim-öğretim dönemleri boyunca hafta içi 08:30 - 23:00, hafta sonları ise 10:00 - 18:00 saatleri arasında hizmet vermektedir. Vize ve final dönemlerinde çalışma saatleri 24 saat olacak şekilde uzatılabilmektedir."
+    "answer": "Şehit Astsubay Ömer Halisdemir Kütüphanesi eğitim-öğretim dönemleri boyunca hafta içi 08:30 - 23:00, hafta sonları ise 10:00 - 18:00 saatleri arasında hizmet vermektedir. Vize ve final dönemlerinde çalışma saatleri 24 saat olacak şekilde uzatılabilmektedir.",
+    "category": "Kütüphane"
   },
   {
     "id": 3,
     "question": "Kampüs içi ulaşım (Ring) ücretli mi?",
-    "answer": "Evliya Çelebi Yerleşkesi içerisinde çalışan ring araçları öğrencilerimiz için tamamen ücretsizdir. Ringler ring duraklarından kalkıp tüm fakülteleri dolaşmaktadır."
+    "answer": "Evliya Çelebi Yerleşkesi içerisinde çalışan ring araçları öğrencilerimiz için tamamen ücretsizdir. Ringler ring duraklarından kalkıp tüm fakülteleri dolaşmaktadır.",
+    "category": "Kampüs Hayatı"
   },
   {
     "id": 4,
     "question": "Yemekhane menüsünü ve fiyatlarını nereden öğrenebilirim?",
-    "answer": "Günlük yemekhane menüsüne Sağlık, Kültür ve Spor Daire Başkanlığı (SKS) web sitesi üzerinden veya DPÜ Mobil uygulamasından ulaşabilirsiniz. Öğrenci yemek ücretleri her akademik yıl başında SKS tarafından duyurulmaktadır."
+    "answer": "Günlük yemekhane menüsüne Sağlık, Kültür ve Spor Daire Başkanlığı (SKS) web sitesi üzerinden veya DPÜ Mobil uygulamasından ulaşabilirsiniz. Öğrenci yemek ücretleri her akademik yıl başında SKS tarafından duyurulmaktadır.",
+    "category": "Kampüs Hayatı"
   },
   {
     "id": 5,
     "question": "Akademik takvime ve sınav tarihlerine nasıl erişebilirim?",
-    "answer": "Güz, Bahar ve Yaz dönemlerini kapsayan Akademik Takvim, Öğrenci İşleri Daire Başkanlığı (oidb.dpu.edu.tr) resmi web sayfasında dönem başlamadan önce yayımlanmaktadır."
+    "answer": "Güz, Bahar ve Yaz dönemlerini kapsayan Akademik Takvim, Öğrenci İşleri Daire Başkanlığı (oidb.dpu.edu.tr) resmi web sayfasında dönem başlamadan önce yayımlanmaktadır.",
+    "category": "Öğrenci İşleri"
   },
   {
     "id": 6,
     "question": "Öğrenci otomasyon sistemine (OBS) nasıl giriş yapabilirim?",
-    "answer": "obs.dpu.edu.tr adresi üzerinden öğrenci numaranız ve size verilen veya e-devlet ile belirlediğiniz şifre ile giriş yapabilirsiniz. Ders seçimleri ve not görüntüleme işlemleri bu sistem üzerinden yapılmaktadır."
+    "answer": "obs.dpu.edu.tr adresi üzerinden öğrenci numaranız ve size verilen veya e-devlet ile belirlediğiniz şifre ile giriş yapabilirsiniz. Ders seçimleri ve not görüntüleme işlemleri bu sistem üzerinden yapılmaktadır.",
+    "category": "Öğrenci İşleri"
+  },
+  {
+    "id": 7,
+    "question": "Hazırlık sınıfı muafiyet sınavı (YDYS) ne zaman yapılır?",
+    "answer": "Yabancı Dil Yeterlik Sınavı (YDYS), genellikle akademik yılın başında (Güz dönemi kayıtlarından hemen sonra) Yabancı Diller Yüksekokulu tarafından düzenlenir. Detaylı tarihler akademik takvimde ve ydyo.dpu.edu.tr adresinde duyurulmaktadır.",
+    "category": "Akademik"
+  },
+  {
+    "id": 8,
+    "question": "Öğrenci Belgesi ve Transkripti nereden alabilirim?",
+    "answer": "E-imzalı Öğrenci Belgesi ve Transkript (Not Dökümü) belgelerinizi e-Devlet kapısı üzerinden veya obs.dpu.edu.tr öğrenci bilgi sistemi üzerinden ücretsiz olarak alabilirsiniz. Islak imzalı belge gerekmesi halinde kendi fakültenizin/meslek yüksekokulunuzun öğrenci işleri bürosuna başvurmanız gerekmektedir.",
+    "category": "Öğrenci İşleri"
+  },
+  {
+    "id": 9,
+    "question": "DPUMobil uygulamasını nereden indirebilirim ve ne işe yarar?",
+    "answer": "DPUMobil uygulamasını App Store (iOS) veya Google Play Store (Android) üzerinden indirebilirsiniz. Bu uygulama sayesinde duyuruları anlık takip edebilir, yemek menüsünü görebilir, sınav notlarınıza ulaşabilir ve kampüs içi etkinliklerden haberdar olabilirsiniz.",
+    "category": "Genel"
+  },
+  {
+    "id": 10,
+    "question": "Kütüphane veritabanlarına kampüs dışından nasıl erişebilirim (VETİS)?",
+    "answer": "Veritabanlarına kampüs dışı erişim sistemi olan VETİS'e Kütüphane ve Dokümantasyon Daire Başkanlığı web sayfasından ulaşabilirsiniz. Sisteme giriş yaparken obs.dpu.edu.tr sistemindeki öğrenci numaranız ve OBS şifreniz kullanılmaktadır.",
+    "category": "Kütüphane"
+  },
+  {
+    "id": 11,
+    "question": "Kurum içi ve Kurumlar arası Yatay Geçiş başvuruları ne zaman yapılmaktadır?",
+    "answer": "Yatay geçiş başvuruları genellikle Güz dönemi için Ağustos ayında, Bahar dönemi için ise Ocak/Şubat aylarında yapılmaktadır. Kesin tarihler ve başvuru şartları Öğrenci İşleri Daire Başkanlığı'nın web sitesinde (oidb.dpu.edu.tr) ilan edilmektedir.",
+    "category": "Öğrenci İşleri"
+  },
+  {
+    "id": 12,
+    "question": "Erasmus+ değişim programına nasıl başvurabilirim?",
+    "answer": "Erasmus+ öğrenim ve staj hareketliliği başvuruları her yıl Dış İlişkiler ve Erasmus Koordinatörlüğü (erasmus.dpu.edu.tr) tarafından ilan edilen takvime göre alınmaktadır. Başvuru için genellikle minimum not ortalaması (Lisans için 2.20/4.00) ve yabancı dil yeterlilik sınavından başarılı olma şartı aranır.",
+    "category": "Uluslararası"
   }
 ]

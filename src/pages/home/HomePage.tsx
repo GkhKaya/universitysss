@@ -28,6 +28,7 @@ export function HomePage() {
   const [search, setSearch] = useState('')
   const [feedStatus, setFeedStatus] = useState<'loading' | 'ready' | 'error'>('loading')
   const [approvedQuestions, setApprovedQuestions] = useState<ApprovedQuestion[]>([])
+  const [selectedCategory, setSelectedCategory] = useState<string>('Tümü')
 
   useEffect(() => {
     let cancelled = false
@@ -51,16 +52,25 @@ export function HomePage() {
     }
   }, [])
 
+  const categories = useMemo(() => {
+    const cats = new Set(approvedQuestions.map((q) => q.categoryName).filter(Boolean))
+    return ['Tümü', ...Array.from(cats)]
+  }, [approvedQuestions])
+
   const filteredQuestions = useMemo(() => {
+    let result = approvedQuestions
+    if (selectedCategory !== 'Tümü') {
+      result = result.filter((q) => q.categoryName === selectedCategory)
+    }
     const q = search.trim().toLocaleLowerCase('tr-TR')
-    if (!q) return approvedQuestions
-    return approvedQuestions.filter((item) => {
+    if (!q) return result
+    return result.filter((item) => {
       const title = item.title ? item.title.toLocaleLowerCase('tr-TR') : ''
       const content = item.content ? item.content.toLocaleLowerCase('tr-TR') : ''
       const category = item.categoryName ? item.categoryName.toLocaleLowerCase('tr-TR') : ''
       return title.includes(q) || content.includes(q) || category.includes(q)
     })
-  }, [approvedQuestions, search])
+  }, [approvedQuestions, search, selectedCategory])
 
   const popularQuestions = useMemo(
     () =>
@@ -126,9 +136,18 @@ export function HomePage() {
           <section className="home-feed">
             <div className="home-feed__header">
               <h1>Güncel Sorular</h1>
-              <button type="button" className="home-filter-button">
-                Filtrele
-              </button>
+              <select
+                className="home-filter-select"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+                aria-label="Kategori filtrele"
+              >
+                {categories.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
             </div>
 
             {feedStatus === 'loading' ? <p className="home-feed-state">Sorular yükleniyor...</p> : null}

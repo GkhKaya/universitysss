@@ -15,9 +15,6 @@ export function Sidebar({ children }: { children?: React.ReactNode }) {
         <NavLink to="/home" className={navClass}>
           Ana Sayfa
         </NavLink>
-        <button className="home-nav-item" type="button">
-          Kategoriler
-        </button>
         <NavLink to="/faq" className={navClass}>
           Sıkça Sorulan Sorular
         </NavLink>
