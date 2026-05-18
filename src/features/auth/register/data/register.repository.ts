@@ -10,6 +10,8 @@ import type { IFirestoreManager } from '../../../../shared/lib/firebase/firestor
 import { FIRESTORE_COLLECTIONS } from '../../../../shared/types/firestore'
 import type { Department } from '../../../../shared/types/firestore/department.model'
 import type { UserRole } from '../../../../shared/types/firestore/user-role.model'
+import { defaultUserIsApproved } from '../../../../shared/auth/admin-role'
+import { buildUserRoleFields } from '../../../../shared/auth/user-roles'
 import { AppError } from '../../../../shared/errors'
 import type { RegistrationRole } from '../model/types'
 
@@ -90,14 +92,16 @@ export class RegisterRepository {
       throw new AppError('REGISTER_AUTH_FAILED')
     }
 
+    const roleFields = buildUserRoleFields([{ id: resolvedRole.id, label: resolvedRole.label }])
+
     const userDoc: DocumentData = {
       uid,
       displayName: input.displayName.trim(),
       email: input.email.trim(),
-      roleId: resolvedRole.id,
-      roleLabel: resolvedRole.label,
+      ...roleFields,
       departmentId: resolvedDept.id,
       departmentName: resolvedDept.name,
+      isApproved: defaultUserIsApproved(roleFields.roles),
       createdAt: serverTimestamp(),
     }
 

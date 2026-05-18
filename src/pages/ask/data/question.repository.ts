@@ -2,6 +2,7 @@ import { serverTimestamp, where } from 'firebase/firestore'
 import type { DocumentData } from 'firebase/firestore'
 import { AppError } from '../../../shared/errors'
 import { canAccessQuestionApprovals } from '../../../shared/auth/role-permissions'
+import { getPrimaryRoleId } from '../../../shared/auth/user-roles'
 import type { IAuthManager } from '../../../shared/lib/firebase'
 import type { IFirestoreManager } from '../../../shared/lib/firebase'
 import { FIRESTORE_COLLECTIONS } from '../../../shared/types/firestore'
@@ -120,7 +121,7 @@ export class QuestionRepository {
       content: input.content.trim(),
       authorId: profile.uid,
       authorName: profile.displayName,
-      authorRoleId: profile.roleId,
+      authorRoleId: getPrimaryRoleId(profile),
       isAnonymous: input.isAnonymous,
       departmentId: department.id,
       categoryId: input.categoryId,

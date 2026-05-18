@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useAuth, useCanAccessQuestionApprovals } from '../../shared/auth'
+import { useAuth } from '../../shared/auth'
 import { useTheme } from '../../shared/theme'
 import { questionRepository } from '../ask/data/question.repository.instance'
 import type { ApprovedQuestion } from '../ask/data/question.repository'
@@ -22,17 +22,9 @@ function formatDate(ts: { toDate?: () => Date } | null | undefined): string {
   return date.toLocaleDateString('tr-TR')
 }
 
-
-
-const TOP_USERS = [
-  { name: 'Zeynep Yılmaz', major: 'Bilgisayar Müh.', score: 450 },
-  { name: 'Caner Kaya', major: 'Mimarlık', score: 380 },
-]
-
 export function HomePage() {
   const { theme, toggleTheme } = useTheme()
   const { logout } = useAuth()
-  const canOpenApprovals = useCanAccessQuestionApprovals()
   const [search, setSearch] = useState('')
   const [feedStatus, setFeedStatus] = useState<'loading' | 'ready' | 'error'>('loading')
   const [approvedQuestions, setApprovedQuestions] = useState<ApprovedQuestion[]>([])
@@ -212,22 +204,6 @@ export function HomePage() {
                       <span className="home-popular-badge">💬 {item.answerIds.length}</span>
                     </li>
                   ))}
-              </ul>
-            </section>
-
-            <section className="home-widget-card">
-              <h2>En Çok Katkıda Bulunanlar</h2>
-              <ul>
-                {TOP_USERS.map((user) => (
-                  <li key={user.name} className="home-user-row">
-                    <span className="home-user-avatar">{user.name.charAt(0)}</span>
-                    <div>
-                      <strong>{user.name}</strong>
-                      <small>{user.major}</small>
-                    </div>
-                    <span className="home-user-score">+{user.score}</span>
-                  </li>
-                ))}
               </ul>
             </section>
           </aside>

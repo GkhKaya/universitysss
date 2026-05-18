@@ -1,5 +1,7 @@
 import { serverTimestamp, where, arrayUnion } from 'firebase/firestore'
 import type { DocumentData } from 'firebase/firestore'
+import { canAccessQuestionApprovals } from '../../../shared/auth/role-permissions'
+import { getPrimaryRoleId } from '../../../shared/auth/user-roles'
 import { AppError } from '../../../shared/errors'
 import type { IAuthManager } from '../../../shared/lib/firebase'
 import type { IFirestoreManager } from '../../../shared/lib/firebase'
@@ -60,7 +62,7 @@ export class AnswerRepository {
       content: input.content.trim(),
       authorId: profile.uid,
       authorName: profile.displayName,
-      authorRoleId: profile.roleId,
+      authorRoleId: getPrimaryRoleId(profile),
       isAnonymous: input.isAnonymous,
       isVerified: false,
       createdAt: serverTimestamp(),
@@ -90,7 +92,7 @@ export class AnswerRepository {
     const profile = await this.db.getById<User>(FIRESTORE_COLLECTIONS.users, user.uid)
     if (!profile) throw new AppError('PROFILE_NOT_FOUND')
 
-    if (profile.roleId !== 'admin' && profile.roleId !== 'teacher') {
+    if (!canAccessQuestionApprovals(profile)) {
       throw new AppError('CLOSE_FORBIDDEN')
     }
 

@@ -1,12 +1,13 @@
 import type { User } from '../types/firestore'
+import { getUserRoles } from './user-roles'
 
 function normalizeRole(value: string): string {
   return value.trim().toLocaleLowerCase('tr-TR')
 }
 
-export function canAccessQuestionApprovals(profile: Pick<User, 'roleId' | 'roleLabel'>): boolean {
-  const roleLabel = normalizeRole(profile.roleLabel)
-  const roleId = normalizeRole(profile.roleId)
+function roleCanModerate(role: { id: string; label: string }): boolean {
+  const roleLabel = normalizeRole(role.label)
+  const roleId = normalizeRole(role.id)
   return (
     roleLabel.includes('öğretmen') ||
     roleLabel.includes('teacher') ||
@@ -15,4 +16,13 @@ export function canAccessQuestionApprovals(profile: Pick<User, 'roleId' | 'roleL
     roleId.includes('teacher') ||
     roleId.includes('admin')
   )
+}
+
+export function canAccessQuestionApprovals(
+  profile: Pick<User, 'roles' | 'roleId' | 'roleLabel' | 'permissions'>,
+): boolean {
+  if (profile.permissions?.canModerate) {
+    return true
+  }
+  return getUserRoles(profile).some(roleCanModerate)
 }

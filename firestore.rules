@@ -1,0 +1,123 @@
+rules_version = '2';
+
+// Platform admin: userRoles belge ID'si (kullanıcı uid DEĞİL).
+// Uygulama: src/shared/config/platform-roles.ts → PLATFORM_ADMIN_ROLE_ID
+// Kullanıcıda roles[].id veya roleIds içinde bu UUID olmalı.
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function userProfile() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function profileExists() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid));
+    }
+
+    function platformAdminRoleId() {
+      return 'ac65be64-5c72-44a2-91b5-5573fb814060';
+    }
+
+    function isPlatformAdmin() {
+      let p = userProfile();
+      let adminRoleId = platformAdminRoleId();
+      return profileExists()
+        && (
+          (p.permissions != null && p.permissions.isPlatformAdmin == true)
+          || (p.roleIds != null && adminRoleId in p.roleIds)
+          || p.roleId == adminRoleId
+        );
+    }
+
+    function canModerate() {
+      let p = userProfile();
+      return profileExists()
+        && (
+          (p.permissions != null && p.permissions.canModerate == true)
+          || isPlatformAdmin()
+          || (p.roleId != null && p.roleId.lower().matches('.*(teacher|admin).*'))
+          || (p.roleLabel != null
+            && p.roleLabel.lower().matches('.*(öğretmen|teacher|admin|yönetici).*'))
+        );
+    }
+
+    function canReadQuestion() {
+      return isSignedIn()
+        && (
+          resource.data.isApproved == true
+          || resource.data.authorId == request.auth.uid
+          || canModerate()
+        );
+    }
+
+    match /userRoles/{roleId} {
+      allow read: if true;
+    }
+
+    match /departments/{departmentId} {
+      allow read: if true;
+      allow create, update, delete: if isPlatformAdmin();
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isPlatformAdmin();
+      allow create: if isOwner(userId)
+        && request.resource.data.uid == userId
+        && request.resource.data.email is string
+        && request.resource.data.displayName is string;
+      allow update: if isOwner(userId)
+        || (isPlatformAdmin()
+          && request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['isApproved', 'roles', 'roleIds', 'permissions']));
+      allow delete: if isPlatformAdmin() && request.auth.uid != userId;
+    }
+
+    match /questionCategories/{categoryId} {
+      allow read: if isSignedIn();
+      allow create, update, delete: if isPlatformAdmin();
+    }
+
+    match /questions/{questionId} {
+      allow read: if canReadQuestion();
+
+      allow create: if isSignedIn()
+        && request.resource.data.authorId == request.auth.uid
+        && request.resource.data.isApproved == false;
+
+      allow update: if isSignedIn()
+        && (
+          (isPlatformAdmin()
+            && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(['isApproved', 'updatedAt']))
+          || (canModerate()
+            && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(['isApproved', 'updatedAt']))
+          || (canModerate()
+            && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(['status', 'updatedAt']))
+          || request.resource.data.diff(resource.data).affectedKeys()
+            .hasOnly(['answerIds', 'updatedAt'])
+        );
+
+      allow delete: if isPlatformAdmin();
+    }
+
+    match /answers/{answerId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn()
+        && request.resource.data.authorId == request.auth.uid
+        && request.resource.data.content is string
+        && request.resource.data.questionId is string;
+      allow delete: if isPlatformAdmin();
+    }
+  }
+}

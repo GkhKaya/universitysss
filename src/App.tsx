@@ -7,6 +7,7 @@ import { QuestionApprovalsPage } from './pages/question-approvals/QuestionApprov
 import { QuestionDetailPage } from './pages/question-detail/QuestionDetailPage'
 import { AnswerQuestionsPage } from './pages/answer-questions/AnswerQuestionsPage'
 import { FaqPage } from './pages/faq/FaqPage'
+import { AdminRoute } from './pages/admin/AdminRoute'
 import { useAuth } from './shared/auth'
 
 export default function App() {
@@ -35,6 +36,7 @@ export default function App() {
           path="/question-approvals"
           element={user ? <QuestionApprovalsPage /> : <Navigate to="/login" replace />}
         />
+        <Route path="/admin" element={<AdminRoute />} />
         <Route 
           path="/question/:id" 
           element={user ? <QuestionDetailPage /> : <Navigate to="/login" replace />} 

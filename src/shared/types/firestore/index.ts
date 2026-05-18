@@ -1,6 +1,7 @@
 export { FIRESTORE_COLLECTIONS, type FirestoreCollectionName } from './collections'
 export type { UserRole } from './user-role.model'
 export type { Department } from './department.model'
+export type { UserRoleAssignment, UserPermissions } from './user-role-assignment.model'
 export type { User } from './user.model'
 export type { QuestionCategory } from './question-category.model'
 export type { Question, QuestionTargetAudience } from './question.model'

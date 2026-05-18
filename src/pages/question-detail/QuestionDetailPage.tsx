@@ -44,8 +44,6 @@ export function QuestionDetailPage() {
     )
   }
 
-  const isAdminOrTeacher = user?.roleId === 'admin' || user?.roleId === 'teacher'
-  
   // Organizes answers into a tree structure
   const topLevelAnswers = answers.filter((a) => !a.parentId)
   const getReplies = (parentId: string) => answers.filter((a) => a.parentId === parentId)
@@ -148,7 +146,7 @@ export function QuestionDetailPage() {
             <article className="qd-question-card">
               <div className="qd-question-card__header">
                 <h1 className="qd-title">{question.title}</h1>
-                {isAdminOrTeacher && !question.status && (
+                {canOpenApprovals && !question.status && (
                   <button className="qd-btn-close" onClick={closeQuestion}>
                     Soruyu Kapat
                   </button>

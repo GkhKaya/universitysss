@@ -1,9 +1,10 @@
 import { Link, NavLink } from 'react-router-dom'
-import { useCanAccessQuestionApprovals } from '../auth'
+import { useCanAccessQuestionApprovals, useIsPlatformAdmin } from '../auth'
 import '../../pages/home/HomePage.css'
 
 export function Sidebar({ children }: { children?: React.ReactNode }) {
   const canOpenApprovals = useCanAccessQuestionApprovals()
+  const { isAdmin } = useIsPlatformAdmin()
 
   const navClass = ({ isActive }: { isActive: boolean }) =>
     `home-nav-item ${isActive ? 'home-nav-item--active' : ''}`
@@ -26,7 +27,12 @@ export function Sidebar({ children }: { children?: React.ReactNode }) {
         <NavLink to="/answer-questions" className={navClass}>
           Soru Cevaplama
         </NavLink>
-        {canOpenApprovals && (
+        {isAdmin && (
+          <NavLink to="/admin" className={navClass}>
+            Yönetim Paneli
+          </NavLink>
+        )}
+        {canOpenApprovals && !isAdmin && (
           <NavLink to="/question-approvals" className={navClass}>
             Onay Bekleyen Sorular
           </NavLink>
