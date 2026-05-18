@@ -22,6 +22,7 @@ export type AdminQuestionRow = {
   authorName: string
   categoryName: string
   isApproved: boolean
+  status: boolean
   createdAt: Question['createdAt']
 }
 
@@ -99,6 +100,7 @@ export class AdminRepository {
         authorName: data.isAnonymous ? 'Anonim' : data.authorName,
         categoryName: data.categoryName,
         isApproved: data.isApproved,
+        status: data.status || false,
         createdAt: data.createdAt,
       }))
       .sort((a, b) => (b.createdAt?.toMillis?.() ?? 0) - (a.createdAt?.toMillis?.() ?? 0))
@@ -115,6 +117,7 @@ export class AdminRepository {
         authorName: data.isAnonymous ? 'Anonim' : data.authorName,
         categoryName: data.categoryName,
         isApproved: data.isApproved,
+        status: data.status || false,
         createdAt: data.createdAt,
       }))
       .sort((a, b) => (b.createdAt?.toMillis?.() ?? 0) - (a.createdAt?.toMillis?.() ?? 0))
@@ -129,6 +132,18 @@ export class AdminRepository {
       })
     } catch (err) {
       console.error('approveQuestion failed:', err)
+      throw new AppError('ADMIN_OPERATION_FAILED')
+    }
+  }
+
+  async closeQuestion(questionId: string): Promise<void> {
+    await this.requireAdmin()
+    try {
+      await this.db.update<Question>(FIRESTORE_COLLECTIONS.questions, questionId, {
+        status: true,
+        updatedAt: serverTimestamp() as Question['updatedAt'],
+      })
+    } catch {
       throw new AppError('ADMIN_OPERATION_FAILED')
     }
   }

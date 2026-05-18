@@ -36,9 +36,7 @@ export function AskPage() {
             >
               {theme === 'dark' ? '☀️' : '🌙'}
             </button>
-            <button type="button" className="ask-top-icon" aria-label="Bildirimler">
-              🔔
-            </button>
+
             <span className="ask-avatar" aria-hidden="true" title="Profil">
               G
             </span>
@@ -133,6 +131,7 @@ export function AskPage() {
                           ? a.departmentLoadError
                           : a.departmentPlaceholder}
                     </option>
+                    <option value="all">Tüm Bölümler</option>
                     {vm.departments.map((department) => (
                       <option key={department.id} value={department.id}>
                         {department.name}

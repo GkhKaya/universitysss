@@ -6,7 +6,7 @@ import { AppError } from '../../../shared/errors'
 import type { IAuthManager } from '../../../shared/lib/firebase'
 import type { IFirestoreManager } from '../../../shared/lib/firebase'
 import { FIRESTORE_COLLECTIONS } from '../../../shared/types/firestore'
-import type { Answer, User } from '../../../shared/types/firestore'
+import type { Answer, Question, User } from '../../../shared/types/firestore'
 
 export type CreateAnswerInput = {
   questionId: string
@@ -99,6 +99,38 @@ export class AnswerRepository {
     await this.db.update(FIRESTORE_COLLECTIONS.questions, questionId, {
       status: true,
       updatedAt: serverTimestamp(),
+    })
+  }
+
+  async getMyAnsweredQuestions(): Promise<Question[]> {
+    const user = this.auth.getCurrentUser()
+    if (!user) throw new AppError('ANSWER_UNAUTHENTICATED')
+
+    const answersResult = await this.db.list<Answer>(
+      FIRESTORE_COLLECTIONS.answers,
+      where('authorId', '==', user.uid),
+    )
+
+    const questionIds = Array.from(new Set(answersResult.map((a) => a.data.questionId)))
+    if (questionIds.length === 0) return []
+
+    // Fetch questions by ID
+    const promises = questionIds.map(async (id) => {
+      const q = await this.db.getById<Question>(FIRESTORE_COLLECTIONS.questions, id)
+      if (q) {
+        // Some wrappers don't inject ID automatically on getById if not handled, so we ensure it:
+        return { ...q, id } as Question
+      }
+      return null
+    })
+
+    const results = await Promise.all(promises)
+    const questions = results.filter((q): q is Question => q !== null)
+
+    return questions.sort((a, b) => {
+      const timeA = a.createdAt?.toMillis?.() || 0
+      const timeB = b.createdAt?.toMillis?.() || 0
+      return timeB - timeA // En yeni sorular üstte
     })
   }
 }

@@ -28,7 +28,7 @@ export function MyQuestionsPage() {
   const { messages } = useLocale()
   const m = messages.myQuestions
   const { theme, toggleTheme } = useTheme()
-  const { logout } = useAuth()
+  const { user, logout } = useAuth()
   const canOpenApprovals = useCanAccessQuestionApprovals()
   const { questions, status } = useMyQuestionsViewModel()
   const [filter, setFilter] = useState<FilterStatus>('all')
@@ -59,12 +59,10 @@ export function MyQuestionsPage() {
             >
               {theme === 'dark' ? '☀️' : '🌙'}
             </button>
-            <button type="button" className="mq-top-icon" aria-label="Bildirimler">
-              🔔
-            </button>
-            <span className="mq-avatar" aria-hidden="true" title="Profil">
-              G
-            </span>
+
+            <Link to="/profile" className="mq-avatar" title="Profil">
+              {user?.displayName?.[0]?.toUpperCase() || 'G'}
+            </Link>
             <button
               type="button"
               className="mq-top-icon"

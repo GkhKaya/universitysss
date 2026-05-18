@@ -91,16 +91,36 @@ export function AdminPage() {
             {vm.tab === 'questions' ? (
               <section className="adm-section">
                 <div className="adm-section__toolbar">
-                  <label className="adm-toggle">
-                    <input
-                      type="checkbox"
-                      checked={vm.showAllQuestions}
-                      onChange={(e) => {
-                        vm.setShowAllQuestions(e.target.checked)
-                      }}
-                    />
-                    Tüm soruları göster
-                  </label>
+                  <nav className="adm-tabs" style={{ marginBottom: 0 }}>
+                    <button
+                      type="button"
+                      className={`adm-tab ${vm.questionFilter === 'all' ? 'adm-tab--active' : ''}`}
+                      onClick={() => vm.setQuestionFilter('all')}
+                    >
+                      Tümü
+                    </button>
+                    <button
+                      type="button"
+                      className={`adm-tab ${vm.questionFilter === 'pending' ? 'adm-tab--active' : ''}`}
+                      onClick={() => vm.setQuestionFilter('pending')}
+                    >
+                      Onay Bekleyenler {vm.pendingQuestions.length > 0 && `(${vm.pendingQuestions.length})`}
+                    </button>
+                    <button
+                      type="button"
+                      className={`adm-tab ${vm.questionFilter === 'open' ? 'adm-tab--active' : ''}`}
+                      onClick={() => vm.setQuestionFilter('open')}
+                    >
+                      Açık Sorular
+                    </button>
+                    <button
+                      type="button"
+                      className={`adm-tab ${vm.questionFilter === 'closed' ? 'adm-tab--active' : ''}`}
+                      onClick={() => vm.setQuestionFilter('closed')}
+                    >
+                      Kapalı Sorular
+                    </button>
+                  </nav>
                 </div>
                 {vm.questionList.length === 0 ? (
                   <p className="adm-state">Liste boş.</p>
@@ -123,7 +143,24 @@ export function AdminPage() {
                                 Onayla
                               </button>
                             ) : (
-                              <span className="adm-badge adm-badge--ok">Onaylı</span>
+                              <>
+                                <span className="adm-badge adm-badge--ok">Onaylı</span>
+                                {!q.status && (
+                                  <button
+                                    type="button"
+                                    className="adm-btn adm-btn--secondary"
+                                    disabled={vm.busyId === q.id}
+                                    onClick={() => {
+                                      void vm.closeQuestion(q.id)
+                                    }}
+                                  >
+                                    Kapat
+                                  </button>
+                                )}
+                                {q.status && (
+                                  <span className="adm-badge adm-badge--pending">Kapalı</span>
+                                )}
+                              </>
                             )}
                             <button
                               type="button"
@@ -231,29 +268,31 @@ export function AdminPage() {
                                 <span className="adm-badge adm-badge--pending">Bekliyor</span>
                               )}
                             </td>
-                            <td className="adm-table__actions">
-                              {!u.isApproved ? (
+                            <td>
+                              <div className="adm-table__actions">
+                                {!u.isApproved ? (
+                                  <button
+                                    type="button"
+                                    className="adm-btn adm-btn--primary adm-btn--sm"
+                                    disabled={vm.busyId === u.id}
+                                    onClick={() => {
+                                      void vm.approveUser(u.id)
+                                    }}
+                                  >
+                                    Onayla
+                                  </button>
+                                ) : null}
                                 <button
                                   type="button"
-                                  className="adm-btn adm-btn--primary adm-btn--sm"
+                                  className="adm-btn adm-btn--danger adm-btn--sm"
                                   disabled={vm.busyId === u.id}
                                   onClick={() => {
-                                    void vm.approveUser(u.id)
+                                    vm.deleteUser(u.id)
                                   }}
                                 >
-                                  Onayla
+                                  Sil
                                 </button>
-                              ) : null}
-                              <button
-                                type="button"
-                                className="adm-btn adm-btn--danger adm-btn--sm"
-                                disabled={vm.busyId === u.id}
-                                onClick={() => {
-                                  vm.deleteUser(u.id)
-                                }}
-                              >
-                                Sil
-                              </button>
+                              </div>
                             </td>
                           </tr>
                         ))}

@@ -110,7 +110,7 @@ export const en: AppMessages = {
     submitLoading: 'Submitting...',
     cancelButton: 'Cancel',
     successTitle: 'Question received',
-    successDescription: 'Your question will be published after review. Thank you.',
+    successDescription: 'Your question has been received. If not reviewed by an admin within 15 minutes, it will be automatically approved and published.',
     successPrimaryAction: 'Ask Another',
     successSecondaryAction: 'Back to Home',
     tipsTitle: 'Tips',

@@ -24,11 +24,12 @@ function formatDate(ts: { toDate?: () => Date } | null | undefined): string {
 
 export function HomePage() {
   const { theme, toggleTheme } = useTheme()
-  const { logout } = useAuth()
+  const { user, logout } = useAuth()
   const [search, setSearch] = useState('')
   const [feedStatus, setFeedStatus] = useState<'loading' | 'ready' | 'error'>('loading')
   const [approvedQuestions, setApprovedQuestions] = useState<ApprovedQuestion[]>([])
   const [selectedCategory, setSelectedCategory] = useState<string>('Tümü')
+  const [statusFilter, setStatusFilter] = useState<'open' | 'closed'>('open')
 
   useEffect(() => {
     let cancelled = false
@@ -58,7 +59,8 @@ export function HomePage() {
   }, [approvedQuestions])
 
   const filteredQuestions = useMemo(() => {
-    let result = approvedQuestions
+    let result = approvedQuestions.filter(q => statusFilter === 'open' ? !q.status : q.status)
+    
     if (selectedCategory !== 'Tümü') {
       result = result.filter((q) => q.categoryName === selectedCategory)
     }
@@ -70,7 +72,7 @@ export function HomePage() {
       const category = item.categoryName ? item.categoryName.toLocaleLowerCase('tr-TR') : ''
       return title.includes(q) || content.includes(q) || category.includes(q)
     })
-  }, [approvedQuestions, search, selectedCategory])
+  }, [approvedQuestions, search, selectedCategory, statusFilter])
 
   const popularQuestions = useMemo(
     () =>
@@ -82,16 +84,7 @@ export function HomePage() {
 
   return (
     <main className="home-dashboard">
-      <Sidebar>
-        <section className="home-filter-block">
-          <h2>Hızlı Filtreler</h2>
-          <ul>
-            <li>Genel SSS</li>
-            <li>Öğretmene Sor</li>
-            <li>Öğrenciye Sor</li>
-          </ul>
-        </section>
-      </Sidebar>
+      <Sidebar />
 
       <section className="home-main">
         <header className="home-topbar">
@@ -114,12 +107,10 @@ export function HomePage() {
             >
               {theme === 'dark' ? '☀️' : '🌙'}
             </button>
-            <button type="button" className="home-top-icon" aria-label="Bildirimler">
-              🔔
-            </button>
-            <span className="home-avatar" aria-hidden="true" title="Profil">
-              G
-            </span>
+
+            <Link to="/profile" className="home-avatar" title="Profil">
+              {user?.displayName?.[0]?.toUpperCase() || 'G'}
+            </Link>
             <button
               type="button"
               className="home-top-icon"
@@ -134,20 +125,54 @@ export function HomePage() {
 
         <div className="home-main-content">
           <section className="home-feed">
-            <div className="home-feed__header">
-              <h1>Güncel Sorular</h1>
-              <select
-                className="home-filter-select"
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                aria-label="Kategori filtrele"
-              >
-                {categories.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
+            <div className="home-feed__header" style={{ display: 'flex', flexDirection: 'column', gap: '1rem', alignItems: 'stretch' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <h1 style={{ margin: 0 }}>Güncel Sorular</h1>
+                <select
+                  className="home-filter-select"
+                  value={selectedCategory}
+                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  aria-label="Kategori filtrele"
+                >
+                  {categories.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div style={{ display: 'flex', gap: '1rem', borderBottom: '1px solid var(--color-border)' }}>
+                <button
+                  onClick={() => setStatusFilter('open')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    padding: '0.5rem 1rem',
+                    cursor: 'pointer',
+                    color: statusFilter === 'open' ? 'var(--color-accent)' : 'var(--color-text-muted)',
+                    borderBottom: statusFilter === 'open' ? '2px solid var(--color-accent)' : '2px solid transparent',
+                    fontWeight: statusFilter === 'open' ? 600 : 400,
+                    fontSize: '1rem'
+                  }}
+                >
+                  Açık Sorular
+                </button>
+                <button
+                  onClick={() => setStatusFilter('closed')}
+                  style={{
+                    background: 'none',
+                    border: 'none',
+                    padding: '0.5rem 1rem',
+                    cursor: 'pointer',
+                    color: statusFilter === 'closed' ? 'var(--color-accent)' : 'var(--color-text-muted)',
+                    borderBottom: statusFilter === 'closed' ? '2px solid var(--color-accent)' : '2px solid transparent',
+                    fontWeight: statusFilter === 'closed' ? 600 : 400,
+                    fontSize: '1rem'
+                  }}
+                >
+                  Kapalı Sorular
+                </button>
+              </div>
             </div>
 
             {feedStatus === 'loading' ? <p className="home-feed-state">Sorular yükleniyor...</p> : null}

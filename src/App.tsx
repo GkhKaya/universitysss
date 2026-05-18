@@ -7,6 +7,7 @@ import { QuestionApprovalsPage } from './pages/question-approvals/QuestionApprov
 import { QuestionDetailPage } from './pages/question-detail/QuestionDetailPage'
 import { AnswerQuestionsPage } from './pages/answer-questions/AnswerQuestionsPage'
 import { FaqPage } from './pages/faq/FaqPage'
+import { ProfilePage } from './pages/profile/ProfilePage'
 import { AdminRoute } from './pages/admin/AdminRoute'
 import { useAuth } from './shared/auth'
 
@@ -29,6 +30,7 @@ export default function App() {
         {/* Protected routes */}
         <Route path="/home" element={user ? <HomePage /> : <Navigate to="/login" replace />} />
         <Route path="/ask" element={user ? <AskPage /> : <Navigate to="/login" replace />} />
+        <Route path="/profile" element={user ? <ProfilePage /> : <Navigate to="/login" replace />} />
         <Route path="/faq" element={user ? <FaqPage /> : <Navigate to="/login" replace />} />
         <Route path="/my-questions" element={user ? <MyQuestionsPage /> : <Navigate to="/login" replace />} />
         <Route path="/answer-questions" element={user ? <AnswerQuestionsPage /> : <Navigate to="/login" replace />} />

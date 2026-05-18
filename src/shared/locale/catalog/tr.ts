@@ -110,7 +110,7 @@ export const tr: AppMessages = {
     submitLoading: 'Gönderiliyor...',
     cancelButton: 'İptal',
     successTitle: 'Sorunuz alındı',
-    successDescription: 'Sorunuz incelendikten sonra yayınlanacak. Teşekkür ederiz.',
+    successDescription: 'Sorunuz başarıyla alındı. Eğer 15 dakika içinde bir yönetici tarafından incelenmezse otomatik olarak onaylanıp yayınlanacaktır.',
     successPrimaryAction: 'Yeni Soru Sor',
     successSecondaryAction: 'Ana Sayfaya Dön',
     tipsTitle: 'İpucu',

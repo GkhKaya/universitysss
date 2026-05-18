@@ -34,7 +34,7 @@ export function useAdminViewModel() {
   const [departments, setDepartments] = useState<AdminDepartmentRow[]>([])
   const [newCategoryName, setNewCategoryName] = useState('')
   const [newDepartmentName, setNewDepartmentName] = useState('')
-  const [showAllQuestions, setShowAllQuestions] = useState(false)
+  const [questionFilter, setQuestionFilter] = useState<'pending' | 'open' | 'closed' | 'all'>('all')
   const [availableRoles, setAvailableRoles] = useState<Array<{ id: string; label: string }>>([])
   const [roleToAddByUser, setRoleToAddByUser] = useState<Record<string, string>>({})
 
@@ -125,6 +125,20 @@ export function useAdminViewModel() {
       () => adminRepository.approveQuestion(questionId),
       'Soru onaylandı.',
       () => markQuestionApproved(questionId),
+    )
+
+  const markQuestionClosed = (questionId: string) => {
+    setAllQuestions((prev) =>
+      prev.map((q) => (q.id === questionId ? { ...q, status: true } : q)),
+    )
+  }
+
+  const closeQuestion = (questionId: string) =>
+    runAction(
+      questionId,
+      () => adminRepository.closeQuestion(questionId),
+      'Soru kapatıldı.',
+      () => markQuestionClosed(questionId),
     )
 
   const deleteQuestion = (questionId: string) => {
@@ -272,7 +286,13 @@ export function useAdminViewModel() {
   }
 
   const pendingUsers = users.filter((u) => !u.isApproved)
-  const questionList = showAllQuestions ? allQuestions : pendingQuestions
+  const questionList = (() => {
+    if (questionFilter === 'pending') return pendingQuestions
+    if (questionFilter === 'all') return allQuestions
+    if (questionFilter === 'open') return allQuestions.filter((q) => q.isApproved && !q.status)
+    if (questionFilter === 'closed') return allQuestions.filter((q) => q.status)
+    return pendingQuestions
+  })()
 
   return {
     tab,
@@ -281,8 +301,8 @@ export function useAdminViewModel() {
     feedback,
     busyId,
     questionList,
-    showAllQuestions,
-    setShowAllQuestions,
+    questionFilter,
+    setQuestionFilter,
     pendingQuestions,
     allQuestions,
     users,
@@ -294,6 +314,7 @@ export function useAdminViewModel() {
     newDepartmentName,
     setNewDepartmentName,
     approveQuestion,
+    closeQuestion,
     deleteQuestion,
     approveUser,
     deleteUser,

@@ -24,7 +24,7 @@ function formatDate(ts: { toDate?: () => Date } | null | undefined): string {
 
 export function AnswerQuestionsPage() {
   const { theme, toggleTheme } = useTheme()
-  const { logout } = useAuth()
+  const { user, logout } = useAuth()
   const canOpenApprovals = useCanAccessQuestionApprovals()
   const [search, setSearch] = useState('')
   const [feedStatus, setFeedStatus] = useState<'loading' | 'ready' | 'error'>('loading')
@@ -90,12 +90,10 @@ export function AnswerQuestionsPage() {
             >
               {theme === 'dark' ? '☀️' : '🌙'}
             </button>
-            <button type="button" className="home-top-icon" aria-label="Bildirimler">
-              🔔
-            </button>
-            <span className="home-avatar" aria-hidden="true" title="Profil">
-              G
-            </span>
+
+            <Link to="/profile" className="home-avatar" title="Profil">
+              {user?.displayName?.[0]?.toUpperCase() || 'G'}
+            </Link>
             <button
               type="button"
               className="home-top-icon"

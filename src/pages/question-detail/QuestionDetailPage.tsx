@@ -119,12 +119,10 @@ export function QuestionDetailPage() {
             >
               {theme === 'dark' ? '☀️' : '🌙'}
             </button>
-            <button type="button" className="home-top-icon" aria-label="Bildirimler">
-              🔔
-            </button>
-            <span className="home-avatar" aria-hidden="true" title="Profil">
-              {user?.displayName?.[0] || 'G'}
-            </span>
+
+            <Link to="/profile" className="home-avatar" title="Profil">
+              {user?.displayName?.[0]?.toUpperCase() || 'G'}
+            </Link>
             <button
               type="button"
               className="home-top-icon"

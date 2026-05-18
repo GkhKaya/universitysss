@@ -43,6 +43,7 @@ export type ApprovedQuestion = {
   categoryName: string
   answerIds: string[]
   voteCount: number
+  status: boolean
   createdAt: Question['createdAt']
 }
 
@@ -100,10 +101,9 @@ export class QuestionRepository {
       throw new AppError('QUESTION_UNAUTHENTICATED')
     }
 
-    const [profile, category, department] = await Promise.all([
+    const [profile, category] = await Promise.all([
       this.db.getById<User>(FIRESTORE_COLLECTIONS.users, user.uid),
       this.db.getById<QuestionCategory>(FIRESTORE_COLLECTIONS.questionCategories, input.categoryId),
-      this.db.getById<Department>(FIRESTORE_COLLECTIONS.departments, input.departmentId),
     ])
 
     if (!profile) {
@@ -112,8 +112,14 @@ export class QuestionRepository {
     if (!category) {
       throw new AppError('QUESTION_CATEGORY_NOT_FOUND')
     }
-    if (!department) {
-      throw new AppError('QUESTION_DEPARTMENT_NOT_FOUND')
+
+    let validDepartmentId = 'all'
+    if (input.departmentId !== 'all') {
+      const department = await this.db.getById<Department>(FIRESTORE_COLLECTIONS.departments, input.departmentId)
+      if (!department) {
+        throw new AppError('QUESTION_DEPARTMENT_NOT_FOUND')
+      }
+      validDepartmentId = department.id
     }
 
     const payload: DocumentData = {
@@ -123,7 +129,7 @@ export class QuestionRepository {
       authorName: profile.displayName,
       authorRoleId: getPrimaryRoleId(profile),
       isAnonymous: input.isAnonymous,
-      departmentId: department.id,
+      departmentId: validDepartmentId,
       categoryId: input.categoryId,
       categoryName: category.name,
       targetAudience: input.targetAudience,
@@ -156,6 +162,7 @@ export class QuestionRepository {
       categoryName: data.categoryName,
       answerIds: data.answerIds,
       voteCount: data.voteCount,
+      status: data.status || false,
       createdAt: data.createdAt,
     }))
 
